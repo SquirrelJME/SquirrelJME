@@ -25,6 +25,22 @@ include("${SQUIRRELJME_NANOCOAT_SOURCE_DIR}/cmake/easier-includes.cmake"
 # Include backports
 squirreljme_include_nanocoat("cmake-bp.cmake")
 
+# Consider this out of date if anything in NanoCoat changes
+# Unfortunately, this is the only reliable way to determine if there have
+# been any changes. This is especially so when called through Gradle and
+# when using MSVC or Xcode.
+if(squirreljme_bp_version_3_12)
+	file(GLOB_RECURSE nanoCoatGlobCMake CONFIGURE_DEPENDS
+		"CMakeLists.txt" "*.cmake")
+	file(GLOB_RECURSE nanoCoatGlobSrc CONFIGURE_DEPENDS
+		"*.c" "*.h" "*.s")
+else()
+	file(GLOB_RECURSE nanoCoatGlobCMake
+		"CMakeLists.txt" "*.cmake")
+	file(GLOB_RECURSE nanoCoatGlobSrc
+		"*.c" "*.h" "*.s")
+endif()
+
 # External projects are needed
 include(ExternalProject)
 
@@ -248,7 +264,8 @@ if(squirreljme_bp_version_3_13)
 			"-A" "${CMAKE_GENERATOR_PLATFORM}"
 			"-S" "${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
 			"-B" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
-		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		DEPENDS "${nanoCoatGlobCMake}")
 else()
 	if("${CMAKE_GENERATOR_TOOLSET}" STREQUAL "")
 		if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
@@ -258,7 +275,8 @@ else()
 					"-C" "${cacheFile}"
 					"-G" "${CMAKE_GENERATOR}"
 					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+				DEPENDS "${nanoCoatGlobCMake}")
 		else()
 			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
 				COMMENT "Configuring NanoCoat..."
@@ -267,7 +285,8 @@ else()
 					"-G" "${CMAKE_GENERATOR}"
 					"-A" "${CMAKE_GENERATOR_PLATFORM}"
 					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+				DEPENDS "${nanoCoatGlobCMake}")
 		endif()
 	else()
 		if("${CMAKE_GENERATOR_PLATFORM}" STREQUAL "")
@@ -278,7 +297,8 @@ else()
 					"-G" "${CMAKE_GENERATOR}"
 					"-T" "${CMAKE_GENERATOR_TOOLSET}"
 					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+				DEPENDS "${nanoCoatGlobCMake}")
 		else()
 			ExternalProject_Add_Step(SquirrelJME RunConfigureStep
 				COMMENT "Configuring NanoCoat..."
@@ -288,7 +308,8 @@ else()
 					"-T" "${CMAKE_GENERATOR_TOOLSET}"
 					"-A" "${CMAKE_GENERATOR_PLATFORM}"
 					"${SQUIRRELJME_NANOCOAT_SOURCE_DIR}"
-				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+				WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+				DEPENDS "${nanoCoatGlobCMake}")
 		endif()
 	endif()
 endif()
@@ -318,7 +339,8 @@ macro(squirreljme_external_step target)
 		COMMAND "${CMAKE_COMMAND}"
 			"--build" "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
 			"--target" ${target}
-		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}")
+		WORKING_DIRECTORY "${SQUIRRELJME_NANOCOAT_BINARY_DIR}"
+		DEPENDS "${nanoCoatGlobSrc}")
 
 	# Add targets to build it
 	ExternalProject_Add_StepTargets(SquirrelJME ${target}

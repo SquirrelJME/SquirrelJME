@@ -126,11 +126,18 @@ struct sjme_scritchui_stateBase
 	/** The loop queue for manual event loops. */
 	sjme_alignPointerL sjme_scritchui_loopQueue loopQueue sjme_alignPointerR;
 
+	/** The loop queue for the periodic timer. */
+	sjme_alignPointerL sjme_scritchui_loopQueue periodicQueue
+		sjme_alignPointerR;
+
 	/** Platform flags (@link sjme_scritchui_lafPlatformFlag @endlink ). */
 	sjme_jint platformFlags;
 	
 	/** Font state. */
 	sjme_scritchui_fontState font;
+	
+	/** Has ScritchUI been terminated? */
+	sjme_atomic(sjme_jint) isTerminated;
 };
 	
 #pragma endregion(scritchui)

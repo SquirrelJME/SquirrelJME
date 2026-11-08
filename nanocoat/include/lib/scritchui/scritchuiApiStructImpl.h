@@ -275,6 +275,12 @@ struct sjme_scritchui_internFunctions
 	/** Common component initialization. */
 	sjme_scritchui_intern_initComponentFunc initComponent;
 	
+	/** Drains the given loop queue. */
+	sjme_scritchui_intern_loopQueueDrainFunc loopQueueDrain;
+	
+	/** Pushes to the given loop queue. */
+	sjme_scritchui_intern_loopQueuePushFunc loopQueuePush;
+	
 	/** Maps the given screen. */
 	sjme_scritchui_intern_mapScreenFunc mapScreen;
 	

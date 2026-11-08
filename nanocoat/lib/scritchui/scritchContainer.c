@@ -592,8 +592,9 @@ sjme_errorCode sjme_scritchui_core_intern_getContainer(
 			container = &((sjme_scritchui_uiWindow)inComponent)->container;
 			break;
 		
+			/* Not a container. */
 		default:
-			return SJME_ERROR_INVALID_ARGUMENT;
+			return SJME_ERROR_NOT_CONTAINER;
 	}
 	
 	/* Success! */

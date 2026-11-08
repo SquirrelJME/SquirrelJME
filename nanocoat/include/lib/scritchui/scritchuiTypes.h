@@ -54,6 +54,17 @@ typedef struct sjme_scritchui_bugs
 
 	/** ScritchUI was compiled with SJME_CONFIG_ONLY_THREAD_SINGLE. */
 	sjme_jboolean onlyThreadSingle;
+	
+	/**
+	 * Calls to @link sjme_scritchui_apiFunctions#loopExecuteLater @endlink
+	 * when done in the event loop run in the current event loop cycle at
+	 * the very end instead of in the next event cycle.
+	 * 
+	 * ScritchUI will set up a period timer to handle specific events such
+	 * as painting as otherwise that will lead to a recursive never-ending
+	 * paint.
+	 */
+	sjme_jboolean executeLaterIsNow;
 } sjme_scritchui_bugs;
 
 /**
@@ -224,14 +235,14 @@ struct sjme_scritchui_uiPaintableBase
 	/** Is this currently in paint? */
 	sjme_alignPointerL sjme_atomic(sjme_jint) inPaint sjme_alignPointerR;
 	
-	/** Belayed painting. */
-	sjme_scritchui_rect belayRect;
-	
 	/** Last error while in paint. */
 	sjme_errorCode lastError;
 	
 	/** Pencil drawing information. */
 	sjme_atomic(sjme_scritchui_pencil) pencil;
+	
+	/** Belayed painting. */
+	sjme_scritchui_rect belayRect;
 };
 	
 #pragma endregion(scritchui_base)
@@ -531,6 +542,9 @@ typedef struct sjme_scritchui_loopQueue
 	/** The lock for the queue items. */
 	sjme_alignPointerL sjme_thread_spinLock lock sjme_alignPointerR;
 	
+	/** The cycle identifier, to prevent infinite runs. */
+	sjme_atomic(sjme_jint) loopCycle;
+	
 	/** The first chunk. */
 	sjme_scritchui_loopQueueChunk* firstChunk;
 	
@@ -549,9 +563,13 @@ struct sjme_scritchui_loopQueueItem
 	/** The "anything" value. */
 	sjme_thread_parameter anything;
 	
+	/** The loop cycle to execute this on. */
+	sjme_jint loopCycle;
+	
 	/** The next item in the queue. */
 	sjme_scritchui_loopQueueItem* next;
 };
+
 struct sjme_scritchui_loopQueueChunk
 {
 	/** The items in the loop queue. */

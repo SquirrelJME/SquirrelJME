@@ -656,8 +656,14 @@ typedef enum sjme_errorCode
 	/** Divide by zero. */
 	SJME_ERROR_DIVIDE_BY_ZERO = -202,
 	
+	/** Not a paintable surface. */
+	SJME_ERROR_NOT_PAINTABLE = -203,
+	
+	/** Not a container. */
+	SJME_ERROR_NOT_CONTAINER = -204,
+	
 	/** The number of error codes. */
-	SJME_NUM_ERROR_CODES = -203,
+	SJME_NUM_ERROR_CODES = -205,
 } sjme_errorCode;
 
 /**

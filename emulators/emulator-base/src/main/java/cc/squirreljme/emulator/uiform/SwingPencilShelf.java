@@ -182,7 +182,6 @@ public final class SwingPencilShelf
 	public static int nativeImageLoadTypes()
 	{
 		return NativeImageLoadType.LOAD_JPEG |
-			NativeImageLoadType.LOAD_GIF |
-			NativeImageLoadType.LOAD_PNG;
+			NativeImageLoadType.LOAD_GIF;
 	}
 }

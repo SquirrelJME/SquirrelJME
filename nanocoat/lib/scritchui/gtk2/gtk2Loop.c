@@ -74,7 +74,6 @@ sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
-	guint eventId;
 	sjme_scritchui_gtk2_onceExecuteData* data;
 	
 	if (inState == NULL || callback == NULL)
@@ -92,8 +91,9 @@ sjme_errorCode sjme_scritchui_gtk2_loopExecuteLater(
 	/* > The notify function should not assume that it is called from any */
 	/* > particular thread or with any particular context acquired. */
 	/* Thus that cannot be used, we must always add to the idle loop. */
-	g_idle_add_full(G_PRIORITY_HIGH_IDLE,
-		sjme_scritchui_gtk2_onceExecute, data, NULL);
+	if (g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,
+		sjme_scritchui_gtk2_onceExecute, data, NULL) <= 0)
+		sjme_message("Failed idle push.");
 	
 	/* Success? */
 	return inState->implIntern->checkError(inState, SJME_ERROR_NONE);

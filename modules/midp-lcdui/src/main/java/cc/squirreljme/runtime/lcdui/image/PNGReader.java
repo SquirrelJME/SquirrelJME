@@ -145,9 +145,11 @@ public class PNGReader
 			
 			// Setup data stream for reading packet data, do not propogate
 			// close
+			int lasttype = 0;
+			int beforeClose = 0;
+			boolean ignoreCrc = false;
 			CRC32Calculator crc = new CRC32Calculator(true, true,
 				0x04C11DB7, 0xFFFFFFFF, 0xFFFFFFFF);
-			int lasttype = 0;
 			try (DataInputStream data = new DataInputStream(
 				new SizeLimitedInputStream(new ChecksumInputStream(crc, in),
 				len + 4, true, false)))
@@ -158,7 +160,11 @@ public class PNGReader
 				
 				// End of PNG, stop processing
 				if (type == 0x49454E44)
+				{
+					// Ignore CRC if end of PNG reached
+					ignoreCrc = true;
 					break;
+				}
 				
 				// Depends on the type
 				switch (type)
@@ -211,18 +217,24 @@ public class PNGReader
 						break;
 					
 						// Unknown, ignore
+						// Ignore the CRC for chunks we are not looking at 
 					default:
+						ignoreCrc = true;
 						break;
 				}
+				
+				// What is the current CRC before close?
+				beforeClose = crc.checksum();
 			}
 			
 			/* {@squirreljme.error EB0u CRC mismatch in PNG data chunk.
-			(Desired CRC; Actual CRC; Last chunk type read)} */
-			int want = in.readInt(),
-				real = crc.checksum();
-			if (want != real)
-				throw new IOException(String.format("EB0u %08x %08x %08x",
-					want, real, lasttype));
+			(Desired CRC; Actual CRC; CRC Before close; Last chunk type 
+			read)} */
+			int want = in.readInt();
+			int real = crc.checksum();
+			if (!ignoreCrc && want != real && want != beforeClose)
+				throw new IOException(String.format("EB0u %08x %08x %08x %08x",
+					want, real, beforeClose, lasttype));
 		}
 		
 		/* {@squirreljme.error EB0v No image data has been loaded.} */

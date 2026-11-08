@@ -87,10 +87,34 @@ static const sjme_scritchui_implInternFunctions
 	sjme_sm(.widgetInit, sjme_scritchui_gtk2_intern_widgetInit),
 };
 
+static gboolean sjme_scritchui_gtk2_periodicTimer(gpointer anything)
+{
+	sjme_errorCode error;
+	sjme_scritchui inState;
+	
+	/* Recover state. */
+	inState = anything;
+	if (inState == NULL)
+		return G_SOURCE_REMOVE;
+	
+	/* Execute periodic timer. */
+	error = inState->intern->loopQueueDrain(inState,
+		&inState->periodicQueue);
+	
+	/* Error? */
+	if (sjme_error_is(error))
+		sjme_message("GTK2 Periodic error: %d", (int)error);
+	
+	/* Continue, unless ScritchUI has been destroyed. */
+	if (sjme_atomic_gl(sjme_jint, &inState->isTerminated) != 0)
+		return G_SOURCE_REMOVE;
+	return G_SOURCE_CONTINUE;
+}
+
 static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
-	sjme_scritchui state;
+	sjme_scritchui inState;
 	GtkAccelGroup* accelGroup;
 	int argc;
 	char** argv;
@@ -99,7 +123,7 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 	
 	/* Restore state. */
-	state = (sjme_scritchui)anything;
+	inState = (sjme_scritchui)anything;
 	
 	/* Enable debug options. */
 	argc = 5;
@@ -122,21 +146,27 @@ static sjme_thread_result sjme_scritchui_gtk2_loopMain(
 	
 	/* Accelerator group, needed for menus. */
 	accelGroup = gtk_accel_group_new();
-	state->common.handle[SJME_SUI_GTK2_H_ACCELG] = accelGroup;
+	inState->common.handle[SJME_SUI_GTK2_H_ACCELG] = accelGroup;
 	
 	/* Make sure the accelerator group does not just disappear. */
 	g_object_ref(accelGroup);
 	
 	/* Need to call thread specific initializer? */
 	/* Usually this is for binding a thread to a JavaVM. */
-	if (state->loopThreadInit != NULL)
-		state->loopThreadInit(state);
+	if (inState->loopThreadInit != NULL)
+		inState->loopThreadInit(inState);
 	
 	/* Debug. */
 	sjme_message("GTK Main Loop...");
 	
 	/* Before we go into the main loop, signal it is ready. */
-	sjme_atomic_s(sjme_jint, &state->loopThreadReady, 1);
+	sjme_atomic_s(sjme_jint, &inState->loopThreadReady, 1);
+	
+	/* Register periodic timer for later event. */
+	if (inState->bugs.executeLaterIsNow)
+		g_timeout_add_full(G_PRIORITY_LOW, 100,
+			sjme_scritchui_gtk2_periodicTimer, inState,
+			NULL);
 	
 	/* Emit barrier for the event thread. */
 	sjme_atomic_heavy();
@@ -185,6 +215,9 @@ sjme_errorCode sjme_scritchui_gtk2_apiInit(
 	
 	/* We set the minimum size in the expose event of the window. */
 	inState->bugs.noContentSizeWhenVisible = SJME_JNI_TRUE;
+	
+	/* loopExecuteLater in the event loop is now. */
+	inState->bugs.executeLaterIsNow = SJME_JNI_TRUE;
 	
 	/* Internal functions to use specifically for GTK. */
 	inState->implIntern = &sjme_scritchui_gtk2InternFunctions;

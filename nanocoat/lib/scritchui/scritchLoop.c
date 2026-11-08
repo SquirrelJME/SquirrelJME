@@ -31,15 +31,20 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_waitAdapter(
 {
 	sjme_scritchui_core_waitData* waitData;
 	sjme_thread_result result;
+	sjme_errorCode error;
 	
 	/* Recover data. */
 	waitData = (sjme_scritchui_core_waitData*)anything;
 	if (waitData == NULL)
 		return SJME_THREAD_RESULT(SJME_ERROR_NULL_ARGUMENTS);
 	
+	/* Light barrier to read the wait data. */
+	sjme_atomic_light();
+	
 	/* Synchronous call. */
 	result = waitData->callback(waitData->anything);
-	waitData->result = SJME_THREAD_RESULT_AS_ERROR(result);
+	error = SJME_THREAD_RESULT_AS_ERROR(result);
+	waitData->result = error;
 	
 	/* Signal that wait is complete. */
 	sjme_atomic_s(sjme_jint, &waitData->signal, 1);
@@ -47,8 +52,14 @@ static sjme_thread_result sjme_attrThreadCall sjme_scritchui_core_waitAdapter(
 	/* Heavy barrier for signaling. */
 	sjme_atomic_heavy();
 	
-	/* Use result from callback. */
-	return result;
+#if defined(SJME_CONFIG_DEBUG)
+	/* Failed loop? */
+	if (sjme_error_is(error))
+		sjme_message("sui_c_wA() -> %d", (int)error);
+#endif
+	
+	/* This technically is a success. */
+	return SJME_THREAD_RESULT(SJME_ERROR_NONE);
 }
 
 sjme_errorCode sjme_scritchui_core_loopExecute(
@@ -92,10 +103,6 @@ sjme_errorCode sjme_scritchui_core_loopExecuteLater(
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything)
 {
-	sjme_errorCode error;
-	sjme_scritchui_core_waitData waitData;
-	sjme_jint i, n;
-	
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
 	
@@ -120,7 +127,7 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 {
 	sjme_errorCode error;
 	sjme_scritchui_core_waitData waitData;
-	sjme_jboolean inThread, lockStep;
+	sjme_jboolean inThread, lockStep, signal;
 	
 	if (inState == NULL || callback == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -152,6 +159,9 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	waitData.callback = callback;
 	waitData.anything = anything;
 	
+	/* A light sync is needed so the other thread can read this. */
+	sjme_atomic_light();
+	
 	/* Execute call. */
 	if (sjme_error_is(error = sjme_scritchui_core_loopExecute(
 		inState, sjme_scritchui_core_waitAdapter,
@@ -161,17 +171,28 @@ sjme_errorCode sjme_scritchui_core_loopExecuteWait(
 	/* Wait for termination. */
 	for (lockStep = SJME_JNI_FALSE;; lockStep = !lockStep)
 	{
+		if (!lockStep)
+			signal = (0 != sjme_atomic_gl(sjme_jint, &waitData.signal));
+		else
+			signal = (0 != sjme_atomic_g(sjme_jint, &waitData.signal));
+		
 		/* Done? */
-		if (0 != sjme_atomic_gl(sjme_jint, &waitData.signal))
+		if (signal)
 			break;
 		
-		/* Lightweight lock every other step until the signal happens. */
-		/* Yield otherwise. */
+		/* Yield every other step. */
 		if (!lockStep)
 			sjme_thread_yield();
-		else
-			sjme_atomic_light();
 	}
+	
+	/* Heavy barrier for full synchronization here. */
+	sjme_atomic_heavy();
+	
+#if defined(SJME_CONFIG_DEBUG)
+	/* Failed loop? */
+	if (sjme_error_is(error))
+		sjme_message("sui_c_lEW() -> %d", (int)waitData.result);
+#endif
 	
 	/* Return the result of the call. */
 	return waitData.result;
@@ -206,9 +227,6 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 	sjme_attrOutNullable sjme_jboolean* outHasTerminated)
 {
 	sjme_errorCode error;
-	sjme_scritchui_loopQueue* loopQueue;
-	sjme_scritchui_loopQueueItem* loopItem;
-	sjme_scritchui_loopQueueItem execItem;
 	
 	if (inState == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -231,28 +249,64 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 		return error;
 
 #if defined(SJME_CONFIG_HAS_BROKEN_CODE)
+#endif
+
+	/* Success? */
+	return error;
+}
+sjme_errorCode sjme_scritchui_core_intern_loopQueueDrain(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_attrOutModify
+		sjme_scritchui_loopQueue* inQueue)
+{
+	sjme_errorCode error;
+	sjme_scritchui_loopQueueItem* loopItem;
+	sjme_scritchui_loopQueueItem* prevItem;
+	sjme_scritchui_loopQueueItem execItem;
+	sjme_thread_result result;
+	sjme_jint loopCycle;
+	
+	if (inState == NULL || inQueue == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Which loop cycle is being run? */
+	loopCycle = sjme_atomic_ga(sjme_jint, &inQueue->loopCycle, 1);
+	
 	/* Run all loop items. */
+	loopItem = NULL;
 	for (;;)
 	{
 		/* Lock the loop queue. */
-		loopQueue = &inState->loopQueue;
 		if (sjme_error_is(error = sjme_thread_spinLockGrab(
-			&loopQueue->lock)))
+			&inQueue->lock)))
 			return sjme_error_default(error);
-
+		
 		/* Are there any loop queue items to run? */
 		memset(&execItem, 0, sizeof(execItem));
-		while (loopQueue->next != NULL)
+		for (prevItem = NULL, loopItem = inQueue->next; loopItem != NULL;
+			prevItem = loopItem)
 		{
-			/* Grab and flow next item. */
-			loopItem = loopQueue->next;
-			loopQueue->next = loopItem->next;
+			/* Ignore items intended for another cycle. */
+			loopItem = inQueue->next;
+			if (loopCycle < loopItem->loopCycle)
+			{
+				sjme_emitB("SKIP");
+				continue;
+			}
+			
+			sjme_emitB("EXEC");
+			
+			/* Relink next item. */
+			if (loopItem == inQueue->next)
+				inQueue->next = loopItem->next;
+			if (prevItem != NULL)
+				prevItem->next = loopItem->next;
 			loopItem->next = NULL;
 
 			/* Was this the last item? If it was, then clear it. */
-			if (loopItem == loopQueue->last)
+			if (loopItem == inQueue->last)
 			{
-				loopQueue->last = NULL;
+				inQueue->last = NULL;
 				break;
 			}
 
@@ -268,21 +322,138 @@ sjme_errorCode sjme_scritchui_core_loopIterate(
 
 		/* Release the lock. */
 		if (sjme_error_is(error = sjme_thread_spinLockRelease(
-			&loopQueue->lock, NULL)))
+			&inQueue->lock, NULL)))
 			return sjme_error_default(error);
 
-		/* Execute it. */
-		if (execItem.function != NULL)
-		{
-			sjme_message(">> Exec out: %p(%p)",
-				execItem.function, execItem.anything);
-			if (sjme_error_is(error = SJME_THREAD_RESULT_AS_ERROR(
-				loopItem->function(loopItem->anything))))
-				return sjme_error_default(error);
-		}
-	}
+		/* Nothing left to run? */
+		if (execItem.function == NULL)
+			break;
+		
+#if defined(SJME_CONFIG_DEBUG)
+		/* Debug. */
+		sjme_message("LQ EXEC %p %p",
+			(void*)execItem.function, (void*)execItem.anything);
 #endif
+		
+		/* Execute it. */
+		result = execItem.function(execItem.anything);
+			
+		/* If it failed, just warn. */
+		if (sjme_error_is(error = SJME_THREAD_RESULT_AS_ERROR(result)))
+			sjme_message("Callback error: %d", (int)error);
+	}
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+	
+sjme_errorCode sjme_scritchui_core_intern_loopQueuePush(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_attrOutModify
+		sjme_scritchui_loopQueue* inQueue,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything)
+{
+	sjme_errorCode error;
+	sjme_scritchui_loopQueueChunk* currentChunk;
+	sjme_scritchui_loopQueueChunk* newChunk;
+	sjme_scritchui_loopQueueItem* checkItem;
+	sjme_jint i, n;
+	
+	if (inState == NULL || inQueue == NULL || callback == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Lock the loop queue. */
+	inQueue = &inState->loopQueue;
+	if (sjme_error_is(error = sjme_thread_spinLockGrab(
+		&inQueue->lock)))
+		return sjme_error_default(error);
+	
+	/* Go through chunks. */
+	currentChunk = inQueue->firstChunk;
+	for (;;)
+	{
+		/* Find a free item to claim. */
+		if (currentChunk != NULL)
+		{
+			/* Find an item to place in. */
+			for (i = 0, n = SJME_SCRITCHUI_LOOP_SIZE; i < n; i++)
+			{
+				/* Check this item. */
+				checkItem = &currentChunk->items[i];
+				
+				/* Not claimed? */
+				if (checkItem->function == NULL)
+				{
+					/* Set parameters. */
+					checkItem->function = callback;
+					checkItem->anything = anything;
+					checkItem->loopCycle = sjme_atomic_g(sjme_jint,
+						&inQueue->loopCycle) + 1;
 
-	/* Success? */
-	return error;
+#if defined(SJME_CONFIG_DEBUG)
+					/* Debug. */
+					sjme_message("LQ PUSH %p %p",
+						(void*)callback, (void*)anything);
+#endif
+					
+					/* Becomes first item?. */
+					if (inQueue->next == NULL)
+						inQueue->next = checkItem;
+					
+					/* Either become the last or be after it. */
+					if (inQueue->last == NULL)
+						inQueue->last = NULL;
+					else
+					{
+						inQueue->last->next = checkItem;
+						inQueue->last = checkItem;
+					}
+					
+					/* Success! So skip to releasing. */
+					goto skip_success;
+				}
+			}
+			
+			/* If there is a next chunk, check that. */
+			if (currentChunk->nextChunk != NULL)
+			{
+				currentChunk = currentChunk->nextChunk;
+				continue;
+			}
+		}
+		
+		/* Need to make a new chunk, since nothing is left. */
+		newChunk = NULL;
+		if (sjme_error_is(error = sjme_alloc(inState->pool,
+			sizeof(*newChunk), (sjme_pointer*)&newChunk)))
+			goto fail_alloc;
+		
+		/* Link in new chunk. */
+		if (inQueue->firstChunk == NULL)
+			inQueue->firstChunk = newChunk;
+		else
+		{
+			newChunk->nextChunk = inQueue->firstChunk;
+			inQueue->firstChunk = newChunk;
+		}
+		
+		/* Try this new chunk. */
+		currentChunk = newChunk;
+	}
+
+	/* Release the lock. */
+skip_success:
+	if (sjme_error_is(error = sjme_thread_spinLockRelease(
+		&inQueue->lock, NULL)))
+		return sjme_error_default(error);
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+	
+fail_alloc:
+	/* Release the before failing lock. */
+	sjme_thread_spinLockRelease(&inQueue->lock, NULL);
+	
+	return sjme_error_default(error);
 }

@@ -29,6 +29,8 @@ extern "C" {
 #endif     /* #ifdef __cplusplus */
 
 /*--------------------------------------------------------------------------*/
+	
+#pragma region(core)
 
 sjme_errorCode sjme_scritchui_core_apiInit(
 	sjme_attrInNotNull sjme_alloc_pool allocPool,
@@ -223,21 +225,6 @@ sjme_errorCode sjme_scritchui_core_fontList(
 	sjme_attrOutNotNull sjme_jint* outValid,
 	sjme_attrOutNullable sjme_jint* outCount);
 
-sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
-	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
-	sjme_attrInValue sjme_gfx_pixelFormat pf,
-	sjme_attrInPositiveNonZero sjme_jint bw,
-	sjme_attrInPositiveNonZero sjme_jint bh,
-	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
-	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
-	sjme_attrInValue sjme_jint sx,
-	sjme_attrInValue sjme_jint sy,
-	sjme_attrInPositiveNonZero sjme_jint sw,
-	sjme_attrInPositiveNonZero sjme_jint sh,
-	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
-
 sjme_errorCode sjme_scritchui_core_labelSetString(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiCommon inCommon,
@@ -428,12 +415,20 @@ sjme_errorCode sjme_scritchui_core_windowSetVisible(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInValue sjme_jboolean isVisible);
+	
+#pragma endregion(core)
+#pragma region(intern)
 
 sjme_errorCode sjme_scritchui_core_intern_bindFocus(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent atRover,
 	sjme_attrInNotNull sjme_scritchui_uiComponent bindComponent,
 	sjme_attrInValue sjme_jboolean isGrabbing);
+
+sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
+	sjme_attrOutNotNull sjme_scritchui_dim* outSize);
 
 sjme_errorCode sjme_scritchui_core_intern_fontBuiltin(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -473,11 +468,6 @@ sjme_errorCode sjme_scritchui_core_intern_getChoice(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInOutNotNull sjme_scritchui_uiChoice* outChoice);
-
-sjme_errorCode sjme_scritchui_core_intern_containerMaxSize(
-	sjme_attrInNotNull sjme_scritchui inState,
-	sjme_attrInOutNotNull sjme_scritchui_uiComponent inContainer,
-	sjme_attrOutNotNull sjme_scritchui_dim* outSize);
 
 sjme_errorCode sjme_scritchui_core_intern_getContainer(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -522,6 +512,18 @@ sjme_errorCode sjme_scritchui_core_intern_initComponent(
 	sjme_attrInValue sjme_jboolean postCreate,
 	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType);
+	
+sjme_errorCode sjme_scritchui_core_intern_loopQueueDrain(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_attrOutModify
+		sjme_scritchui_loopQueue* inQueue);
+	
+sjme_errorCode sjme_scritchui_core_intern_loopQueuePush(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_attrOutModify
+		sjme_scritchui_loopQueue* inQueue,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
 
 sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInNotNull sjme_scritchui inState,
@@ -529,12 +531,12 @@ sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInOutNotNull sjme_scritchui_uiScreen* outScreen,
 	sjme_attrInNullable sjme_scritchui_handle updateHandle);
 
-sjme_errorCode sjme_scritchui_intern_menuItemActivate(
+sjme_errorCode sjme_scritchui_core_intern_menuItemActivate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind itemActivated);
 
-sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
+sjme_errorCode sjme_scritchui_core_intern_menuItemActivateById(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
@@ -574,6 +576,27 @@ sjme_errorCode sjme_scritchui_core_intern_viewSuggest(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
 	sjme_attrInNotNull sjme_scritchui_dim* suggestDim);
+
+#pragma endregion(intern)
+#pragma region(pencil)
+	
+sjme_errorCode sjme_scritchpen_core_hardwareGraphics(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrOutNotNull sjme_scritchui_pencil* outPencil,
+	sjme_attrOutNullable sjme_alloc_weak* outWeakPencil,
+	sjme_attrInValue sjme_gfx_pixelFormat pf,
+	sjme_attrInPositiveNonZero sjme_jint bw,
+	sjme_attrInPositiveNonZero sjme_jint bh,
+	sjme_attrInNullable const sjme_scritchui_pencilLockFunctions* inLockFuncs,
+	sjme_attrInNullable const sjme_frontEndBindable* inLockFrontEndCopy,
+	sjme_attrInValue sjme_jint sx,
+	sjme_attrInValue sjme_jint sy,
+	sjme_attrInPositiveNonZero sjme_jint sw,
+	sjme_attrInPositiveNonZero sjme_jint sh,
+	sjme_attrInNullable const sjme_frontEndBindable* pencilFrontEndCopy);
+	
+#pragma endregion(pencil)
+	
 
 /*--------------------------------------------------------------------------*/
 

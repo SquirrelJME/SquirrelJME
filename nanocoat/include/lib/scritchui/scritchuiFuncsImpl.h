@@ -262,6 +262,7 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getChoiceFunc)(
  * @param inComponent The input component.
  * @param outContainer The resultant container.
  * @return Any error code if applicable, such as the component is not valid.
+ * @throws SJME_ERROR_NOT_CONTAINER If this is not a container.
  * @since 2024/04/20 
  */
 typedef sjme_errorCode (*sjme_scritchui_intern_getContainerFunc)(
@@ -318,6 +319,7 @@ typedef sjme_errorCode (*sjme_scritchui_intern_getMenuHasParentFunc)(
  * @param inComponent The input component.
  * @param outPaintable The resultant paintable.
  * @return Any error code if applicable, such as the component is not valid.
+ * @throws SJME_ERROR_NOT_PAINTABLE If this is not a paintable component.
  * @since 2024/04/20 
  */
 typedef sjme_errorCode (*sjme_scritchui_intern_getPaintableFunc)(
@@ -372,7 +374,39 @@ typedef sjme_errorCode (*sjme_scritchui_intern_initComponentFunc)(
 	sjme_attrInValue sjme_jboolean postCreate,
 	sjme_attrInRange(0, SJME_SCRITCHUI_NUM_UI_TYPES)
 		sjme_scritchui_uiType uiType);
-
+	
+/**
+ * Drains and executes the entire loop queue.
+ * 
+ * @param inState The input state.
+ * @param inQueue The queue to drain.
+ * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @since 2026/11/07
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_loopQueueDrainFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_attrOutModify
+		sjme_scritchui_loopQueue* inQueue);
+	
+/**
+ * Pushes a function to the loop queue.
+ * 
+ * @param inState The input state.
+ * @param inQueue The queue to push onto.
+ * @param callback The callback to execute.
+ * @param anything The data for the execution.
+ * @return On any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @since 2026/11/07
+ */
+typedef sjme_errorCode (*sjme_scritchui_intern_loopQueuePushFunc)(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_attrOutModify
+		sjme_scritchui_loopQueue* inQueue,
+	sjme_attrInNotNull sjme_thread_mainFunc callback,
+	sjme_attrInNullable sjme_thread_parameter anything);
+	
 /**
  * Maps the given screen internally.
  * 

@@ -141,6 +141,43 @@ public enum MLEPencil
 		}
 	},
 	
+	/** 
+	 * {@link PencilShelf#hardwareDrawChar(PencilBracket, char, int, int,
+	 * int)}
+	 */
+	HARDWARE_DRAW_CHAR(MLEDispatcher.methodKey("hardwareDrawChar",
+		void.class, PencilBracket.class, char.class, int.class, int.class,
+		int.class))
+	{
+		/**
+		 * {@inheritDoc}
+		 * @since 2023/02/19
+		 */
+		@Override
+		public Object handle(SpringThreadWorker __thread, Object... __args)
+		{
+			try
+			{
+				PencilShelf.hardwareDrawChar(
+					SpringVisObject.asNative(__thread,
+						PencilBracket.class, __args[0]),
+					(char)((int)SpringVisObject.asNative(__thread,
+						Integer.class, __args[1])),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[2]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[3]),
+					SpringVisObject.asNative(__thread,
+						Integer.class, __args[4]));
+				return null;
+			}
+			catch (MLECallError __e)
+			{
+				return new SpringMLECallError(__e, __e.distinction);
+			}
+		}
+	},
+	
 	/**
 	 * {@link PencilShelf#hardwareDrawChars(PencilBracket, char[], int, int,
 	 * int, int, int)}.

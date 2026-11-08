@@ -356,7 +356,7 @@ sjme_errorCode sjme_scritchui_core_intern_getMenuHasParent(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_intern_menuItemActivate(
+sjme_errorCode sjme_scritchui_core_intern_menuItemActivate(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind itemActivated)
@@ -412,7 +412,7 @@ sjme_errorCode sjme_scritchui_intern_menuItemActivate(
 	return SJME_ERROR_NONE;
 }
 
-sjme_errorCode sjme_scritchui_intern_menuItemActivateById(
+sjme_errorCode sjme_scritchui_core_intern_menuItemActivateById(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInNotNull sjme_scritchui_uiWindow inWindow,
 	sjme_attrInNotNull sjme_scritchui_uiMenuKind atRover,
