@@ -2395,10 +2395,6 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonFunc)(
  * @param inYPoints An array containing all available Y vertex coordinates
  * @param yOffset The offset from which yPoints will begin being read from
  * @param nPoints How many points should be used to construct the polygon.
- * @param safePoints If @link SJME_JNI_TRUE @endlink then the passed
- * points are considered to be safely used in calculations and will be
- * modified, this must be set to @link SJME_JNI_FALSE @endlink when the
- * input coordinates cannot be modified.
  * @return If any argument is @c NULL or if the offset and/or number of
  * points is not valid.
  * @throws SJME_ERROR_INDEX_OUT_OF_BOUNDS If the polygon index reference is
@@ -2412,8 +2408,7 @@ typedef sjme_errorCode (*sjme_scritchui_pencilFillPolygonPrimFunc)(
 	sjme_attrInPositive sjme_jint xOffset,
 	sjme_attrInNotNull const sjme_jint* inYPoints,
 	sjme_attrInPositive sjme_jint yOffset,
-	sjme_attrInPositive sjme_jint nPoints,
-	sjme_attrInValue sjme_jboolean safePoints);
+	sjme_attrInPositive sjme_jint nPoints);
 
 /**
  * Performs rectangular fill in hardware.

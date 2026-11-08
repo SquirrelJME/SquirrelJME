@@ -338,8 +338,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	sjme_attrInPositive sjme_jint xOffset,
 	sjme_attrInNotNull const sjme_jint* inYPoints,
 	sjme_attrInPositive sjme_jint yOffset,
-	sjme_attrInPositive sjme_jint nPoints,
-	sjme_attrInValue sjme_jboolean safePoints)
+	sjme_attrInPositive sjme_jint nPoints)
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
@@ -377,38 +376,27 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	
 	/* Clear. */
 	memset(intersections, 0, allocBytes);
-
-	/* Points are considered to be safe to modify? */
-	if (safePoints)
-	{
-		/* This is technically an unsafe cast. */
-		xPoints = (void*)&inXPoints[xOffset];
-		yPoints = (void*)&inYPoints[yOffset];
-	}
-
+	
 	/* The input points must not be modified. */
-	else
+	/* Input arrays are correctly bounded, so they can be copied, first */
+	/* we need to allocate accordingly. */
+	xPoints = sjme_alloca(allocBytes);
+	yPoints = sjme_alloca(allocBytes);
+
+	/* If any failed, that is not good. */
+	if (xPoints == NULL || yPoints == NULL || intersections == NULL)
 	{
-		/* Input arrays are correctly bounded, so they can be copied, first */
-		/* we need to allocate accordingly. */
-		xPoints = sjme_alloca(allocBytes);
-		yPoints = sjme_alloca(allocBytes);
-
-		/* If any failed, that is not good. */
-		if (xPoints == NULL || yPoints == NULL || intersections == NULL)
-		{
-			error = sjme_error_outOfMemory(NULL, allocBytes * 3);
-			goto fail_alloc;
-		}
-
-		/* Clear everything so all space is wiped. */
-		memset(xPoints, 0, allocBytes);
-		memset(yPoints, 0, allocBytes);
-
-		/* Coordinates can be copied over directly. */
-		memmove(&xPoints[0], &inXPoints[xOffset], sizeof(sjme_jint) * nPoints);
-		memmove(&yPoints[0], &inYPoints[yOffset], sizeof(sjme_jint) * nPoints);
+		error = sjme_error_outOfMemory(NULL, allocBytes * 3);
+		goto fail_alloc;
 	}
+
+	/* Clear everything so all space is wiped. */
+	memset(xPoints, 0, allocBytes);
+	memset(yPoints, 0, allocBytes);
+
+	/* Coordinates can be copied over directly. */
+	memmove(&xPoints[0], &inXPoints[xOffset], sizeof(sjme_jint) * nPoints);
+	memmove(&yPoints[0], &inYPoints[yOffset], sizeof(sjme_jint) * nPoints);
 
 	/* Start with extremes on both ends. */
 	yMax = INT32_MIN;
@@ -460,6 +448,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 				dy = yPoints[j] - yPoints[i];
 				if (dy != 0)
 				{
+					/* TODO FIXME: Precedence. */
 					ix = xPoints[i] * dy + (y - yPoints[i]) *
 						(xPoints[j] - xPoints[i]);
 					ix /= dy;
@@ -500,12 +489,9 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 
 	/* Cleanup. */
 	sjme_alloca_free(intersections);
-	if (!safePoints)
-	{
-		sjme_alloca_free(xPoints);
-		sjme_alloca_free(yPoints);
-	}
-	
+	sjme_alloca_free(xPoints);
+	sjme_alloca_free(yPoints);
+
 	/* Success! */
 	return SJME_ERROR_NONE;
 	
@@ -513,15 +499,11 @@ fail_any:
 fail_alloc:
 	if (intersections != NULL)
 		sjme_alloca_free(intersections);
-	
-	if (!safePoints)
-	{
-		if (xPoints != NULL)
-			sjme_alloca_free(xPoints);
-		if (yPoints != NULL)
-			sjme_alloca_free(yPoints);
-	}
-	
+	if (xPoints != NULL)
+		sjme_alloca_free(xPoints);
+	if (yPoints != NULL)
+		sjme_alloca_free(yPoints);
+
 	return sjme_error_default(error);
 }
 
@@ -554,8 +536,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillTriangle(
 	/* triangle drawing algorithm will be much faster in the future. */
 	return g->prim.fillPolygon(g,
 		&xPoints[0], 0,
-		&yPoints[0], 0, 3,
-		SJME_JNI_TRUE);
+		&yPoints[0], 0, 3);
 }
 
 sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_drawRect(
@@ -1082,8 +1063,7 @@ sjme_errorCode sjme_scritchpen_core_fillPolygon(
 	
 	/* Use primitive draw operation. */
 	if (sjme_error_is(error = g->prim.fillPolygon(g,
-		xPoints, 0, yPoints, 0, nPoints,
-		SJME_JNI_TRUE)))
+		xPoints, 0, yPoints, 0, nPoints)))
 		goto fail_any;
 		
 	/* Release lock. */

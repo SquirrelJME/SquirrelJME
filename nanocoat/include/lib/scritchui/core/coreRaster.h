@@ -82,8 +82,7 @@ sjme_errorCode sjme_scritchpen_corePrim_fillPolygon(
 	sjme_attrInPositive sjme_jint xOffset,
 	sjme_attrInNotNull const sjme_jint* inYPoints,
 	sjme_attrInPositive sjme_jint yOffset,
-	sjme_attrInPositive sjme_jint nPoints,
-	sjme_attrInValue sjme_jboolean safePoints);
+	sjme_attrInPositive sjme_jint nPoints);
 
 sjme_errorCode sjme_scritchpen_corePrim_fillRect(
 	sjme_attrInNotNull sjme_scritchui_pencil g,
