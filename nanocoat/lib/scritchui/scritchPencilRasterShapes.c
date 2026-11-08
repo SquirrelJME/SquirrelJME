@@ -342,11 +342,12 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 {
 	sjme_errorCode error;
 	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
-	sjme_jint yMin, yMax, intersectionCount, allocBytes;
+	sjme_jint yMin, yMax, intersectionCount, allocBytes, allocBytesI;
 	sjme_jint xStart, xEnd, temp, dy, i, j, y, ix;
 	sjme_jint* xPoints;
 	sjme_jint* yPoints;
 	sjme_jint* intersections;
+	sjme_jint maxIntersections;
 	sjme_scritchui_line* clipLine;
 
 	if (g == NULL)
@@ -363,19 +364,23 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	xPoints = NULL;
 	yPoints = NULL;
 
-	/* Allocate intersections. */
-	allocBytes = sizeof(sjme_jint) * (nPoints + 1);
-	intersections = sjme_alloca(allocBytes);
+	/* How many intersections are possible? */
+	allocBytes = sjme_util_sizeToInt(sizeof(sjme_jint) * (nPoints + 1));
+	allocBytesI = allocBytes * 2;
+	maxIntersections = sjme_util_sizeToInt(allocBytesI / sizeof(sjme_jint));
 
+	/* Allocate intersections. */
+	intersections = sjme_alloca(allocBytesI);
+	
 	/* Failed to allocate? */
 	if (intersections == NULL)
 	{
-		error = sjme_error_outOfMemory(NULL, allocBytes * 3);
+		error = sjme_error_outOfMemory(NULL, allocBytesI + (allocBytes * 2));
 		goto fail_alloc;
 	}
 	
 	/* Clear. */
-	memset(intersections, 0, allocBytes);
+	memset(intersections, 0, allocBytesI);
 	
 	/* The input points must not be modified. */
 	/* Input arrays are correctly bounded, so they can be copied, first */
@@ -448,11 +453,12 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 				dy = yPoints[j] - yPoints[i];
 				if (dy != 0)
 				{
-					/* TODO FIXME: Precedence. */
-					ix = xPoints[i] * dy + (y - yPoints[i]) *
-						(xPoints[j] - xPoints[i]);
+					ix = (xPoints[i] * dy) + ((y - yPoints[i]) *
+						(xPoints[j] - xPoints[i]));
 					ix /= dy;
-					intersections[intersectionCount++] = ix;
+					
+					if (intersectionCount < maxIntersections)
+						intersections[intersectionCount++] = ix;
 				}
 			}
 		}
