@@ -714,6 +714,19 @@ sjme_juint sjme_util_intCompactLeft(
 sjme_juint sjme_util_intCompactRight(
 	sjme_attrInValue sjme_juint v,
 	sjme_attrInValue sjme_juint m);
+	
+/**
+ * Exchanges two integer values.
+ * 
+ * @param a The first value.
+ * @param b The second value.
+ * @return Any resultant error, if any.
+ * @throws SJME_ERROR_NULL_ARGUMENTS On null arguments.
+ * @since 2026/11/08
+ */
+sjme_errorCode sjme_util_intExchange(
+	sjme_attrInOutNotNull sjme_jint* a,
+	sjme_attrInOutNotNull sjme_jint* b);
 
 /**
  * Extracts bits to the left.

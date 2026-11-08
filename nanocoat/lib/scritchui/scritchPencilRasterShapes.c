@@ -343,7 +343,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	sjme_errorCode error;
 	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
 	sjme_jint yMin, yMax, intersectionCount, allocBytes, allocBytesI;
-	sjme_jint xStart, xEnd, temp, dy, i, j, y, ix;
+	sjme_jint xStart, xEnd, dy, i, j, y, ix;
 	sjme_jint* xPoints;
 	sjme_jint* yPoints;
 	sjme_jint* intersections;
@@ -465,14 +465,9 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 
 		for (i = 0; i < intersectionCount - 1; i++)
 			for (j = 0; j < intersectionCount - 1 - i; j++)
-			{
 				if (intersections[j] > intersections[j + 1])
-				{
-					temp = intersections[j];
-					intersections[j] = intersections[j + 1];
-					intersections[j + 1] = temp;
-				}
-			}
+					sjme_util_intExchange(&intersections[j],
+						&intersections[j + 1]);
 
 		for (i = 0; i < intersectionCount; i += 2)
 			if (i + 1 < intersectionCount)

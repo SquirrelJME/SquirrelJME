@@ -978,6 +978,24 @@ sjme_juint sjme_util_intCompactRight(
 	return fm;
 }
 
+sjme_errorCode sjme_util_intExchange(
+	sjme_attrInOutNotNull sjme_jint* a,
+	sjme_attrInOutNotNull sjme_jint* b)
+{
+	sjme_jint temp;
+	
+	if (a == NULL || b == NULL)
+		return SJME_ERROR_NULL_ARGUMENTS;
+	
+	/* Exchange. */
+	temp = *a;
+	*a = *b;
+	*b = temp;
+	
+	/* Success! */
+	return SJME_ERROR_NONE;
+}
+
 sjme_juint sjme_util_intExtractLeft(
 	sjme_attrInValue sjme_juint v,
 	sjme_attrInValue sjme_juint m)

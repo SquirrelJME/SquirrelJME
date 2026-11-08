@@ -583,11 +583,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 	/* and destination width/height accordingly (makes source/dest width and */
 	/* height usage more consistent on further adjustments and clipping). */
 	if ((xform & 4) || (xform & 8) || (xform & 16) || (xform & 32))
-	{
-		temp = *h;
-		*h = *w;
-		*w = temp;
-	}
+		sjme_util_intExchange(w, h);
 
 	/* Mirrored horizontally */
 	if (xform & 1)
@@ -615,11 +611,7 @@ sjme_errorCode sjme_scritchpen_coreUtil_applyCoordinateAdj(
 
 	/* Was mirrored horizontally and rotated 270 degrees clockwise */
 	if (xform & 16)
-	{
-		temp = *x;
-		*x = *y;
-		*y = temp;
-	}
+		sjme_util_intExchange(x, y);
 
 	/* Was rotated 270 degrees clockwise */
 	if (xform & 32)
