@@ -67,6 +67,31 @@ else()
 	set(SQUIRRELJME_IS_GCC FALSE)
 endif()
 
+# Is this MSVC?
+if(NOT SQUIRRELJME_IS_GCC)
+	if(MSVC OR
+		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+		set(SQUIRRELJME_IS_MSVC TRUE)
+	else()
+		set(SQUIRRELJME_IS_MSVC FALSE)
+	endif()
+else()
+	set(SQUIRRELJME_IS_MSVC FALSE)
+endif()
+
+# Is this Borland?
+if(NOT SQUIRRELJME_IS_GCC AND
+	NOT SQUIRRELJME_IS_GCC)
+	if(BORLAND)
+		set(SQUIRRELJME_IS_BORLAND TRUE)
+	else()
+		set(SQUIRRELJME_IS_BORLAND FALSE)
+	endif()
+else()
+	set(SQUIRRELJME_IS_BORLAND FALSE)
+endif()
+
 # Needed for language check
 include(CheckLanguage)
 

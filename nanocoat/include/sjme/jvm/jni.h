@@ -204,7 +204,7 @@ typedef struct JavaVMAttachArgs
 #pragma endregion(standardStructs)
 #pragma region(jvmFunctions)
 	
-typedef sjme_undefinedExportFunction sjme_jni_TodoFunc;
+typedef jint (JNICALL *sjme_jni_TodoFunc)(void);
 	
 /**
  * Destroys the specified virtual machine.

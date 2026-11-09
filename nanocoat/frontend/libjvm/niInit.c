@@ -158,6 +158,7 @@ jint JNICALL JNI_CreateJavaVM(
 	/* Bind function pointers. */
 #define sjme_jniSetImpl(group, x) \
 	SJME_TOKEN_PASTE(result, group)->x = \
+		(SJME_TOKEN_PASTE4(sjme_jni_jni, group, x, Func))\
 		SJME_TOKEN_PASTE4(sjme_jni_, group, x, Impl)
 
 	sjme_jniSetImpl(Jvm, DestroyJavaVM);
