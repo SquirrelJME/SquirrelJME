@@ -377,6 +377,15 @@ extern "C"
 	#define sjme_attrExport
 #endif
 
+#if defined(SJME_CONFIG_HAS_OS_WINDOWS) && \
+	!defined(SJME_CONFIG_HAS_OS_WINDOWS_WINE)
+	/** Symbol is imported through a library. */
+	#define sjme_attrImport __declspec(dllimport)
+#else
+	/** Symbol is imported through a library. */
+	#define sjme_attrImport
+#endif
+
 #if SJME_CONFIG_GCC_VERSION_LEAST(3, 0) || \
 	defined(SJME_CONFIG_HAS_CLANG)
 	/** Symbol is hidden in a library. */

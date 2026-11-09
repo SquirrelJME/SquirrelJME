@@ -1219,17 +1219,59 @@ struct JNINativeInterface
 
 /**
  * Creates a new Java Virtual Machine.
+ * 
+ * Note that the JNI specification states "Creation of multiple VMs in a
+ * single process is not supported.", this does not apply to SquirrelJME. This
+ * behavior should not be relied upon, or assumed, when using JNI. 
  *
  * @param pvm The resultant virtual machine.
  * @param penv The output environment.
  * @param args The arguments to the virtual machine creation.
- * @return If successful, @c JNI_OK .
+ * @return An error code.
+ * @throws JNI_EINVAL In the input arguments are invalid.
+ * @throws JNI_ENOMEM When out of memory.
+ * @throws JNI_OK On success.
  * @since 2025/06/25
  */
-jint JNICALL JNI_CreateJavaVM(
+jint SJME_JNI_IMPORT_EXPORT JNICALL JNI_CreateJavaVM(
 	sjme_attrOutNotNull JavaVM** pvm,
 	sjme_attrOutNotNull void** penv,
 	sjme_attrInNotNull void* args);
+	
+/**
+ * Returns all the virtual machines which have been created.
+ * 
+ * Note that the JNI specification states "Creation of multiple VMs in a
+ * single process is not supported.", this does not apply to SquirrelJME. This
+ * behavior should not be relied upon, or assumed, when using JNI.
+ * 
+ * @param vmBuf The output buffer for created virtual machines.
+ * @param bufLen The length of the buffer.
+ * @param nVMs The resultant number of virtual machines returned, this is
+ * optional.
+ * @return An error code.
+ * @throws JNI_EINVAL On null arguments or @c bufLen is negative.
+ * @throws JNI_OK On success.
+ * @since 2026/11/08
+ */
+jint SJME_JNI_IMPORT_EXPORT JNICALL JNI_GetCreatedJavaVMs(
+	sjme_attrInOutNotNullBuf(bufLen) sjme_attrOutModify JavaVM** vmBuf,
+	sjme_attrInPositive jsize bufLen,
+	sjme_attrOutNullable sjme_attrOutModify jsize* nVMs);
+	
+/**
+ * Obtains the default virtual machine configuration.
+ * 
+ * @param args A @c JavaVMInitArgs , the @c version field must be set before
+ * this is called.
+ * @return An error code.
+ * @throws JNI_EINVAL On null arguments.
+ * @throws JNI_EVERSION If the specified version is not supported.
+ * @throws JNI_OK On success.
+ * @since 2024/03/18
+ */
+jint SJME_JNI_IMPORT_EXPORT JNICALL JNI_GetDefaultJavaVMInitArgs(
+	sjme_attrInOutNotNull void* args);
 
 /*--------------------------------------------------------------------------*/
 

@@ -64,16 +64,25 @@ extern "C"
 #if defined(SJME_JNI_IMPLEMENTATION)
 	/** Exported JNI symbol. */
 	#define JNIEXPORT sjme_attrExport
+	
+	/** Imported JNI Symbol. */
+	#define JNIIMPORT
 
 	/** Calling convention used for JNI calls. */
 	#define JNICALL sjme_attrThreadCall
 #else
 	/** Exported JNI symbol. */
 	#define JNIEXPORT
+	
+	/** Imported JNI Symbol. */
+	#define JNIIMPORT sjme_attrImport
 
 	/** Calling convention used for JNI calls. */
 	#define JNICALL sjme_attrExportCall sjme_attrThreadCall
 #endif
+	
+/** Import or export within JNI. */
+#define SJME_JNI_IMPORT_EXPORT JNIEXPORT JNIIMPORT
 
 /** Byte type. */
 typedef sjme_jbyteNative jbyte;
@@ -90,14 +99,36 @@ typedef sjme_jushortNative jchar;
 /** Integer type. */
 typedef sjme_jintNative jint;
 
-/** Long type. */
-typedef sjme_jlongNative jlong;
+#if !defined(SJME_CONFIG_HAS_NO_JLONG_NATIVE)
+	/** Long type. */
+	typedef sjme_jlongNative jlong;
+#else
+	/** Long type. */
+	typedef sjme_jlong jlong;
+#endif
 
-/** Float type. */
-typedef sjme_jfloatNative jfloat;
+#if defined(SJME_CONFIG_HAS_FLOAT_HARD)
+	/** Float type. */
+	typedef sjme_jfloatNative jfloat;
+#else
+	/** Float type. */
+	typedef struct
+	{
+		/** Float bits. */
+		sjme_jint sjme_bits;
+	} jfloat;
+#endif
 
-/** Double type. */
-typedef sjme_jdoubleNative jdouble;
+#if defined(SJME_CONFIG_HAS_DOUBLE_HARD)
+	/** Double type. */
+	typedef sjme_jdoubleNative jdouble;
+#else
+	/** Double type. */
+	typedef struct
+	{
+		sjme_jlong sjme_bits;
+	} jdouble;
+#endif
 
 /** Size type, used for array indexes. */
 typedef jint jsize;

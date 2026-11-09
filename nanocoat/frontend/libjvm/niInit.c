@@ -487,21 +487,15 @@ fail_noMemory:
 	return JNI_ERR;
 }
 
-jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** vmBuf, jsize bufLen, jsize* nVMs)
+jint JNICALL JNI_GetCreatedJavaVMs(
+	sjme_attrInOutNotNullBuf(bufLen) sjme_attrOutModify JavaVM** vmBuf,
+	sjme_attrInPositive jsize bufLen,
+	sjme_attrOutNotNull sjme_attrOutModify jsize* nVMs)
 {
 	sjme_todo("Impl?");
 	return 0;
 }
 
-/**
- * Obtains the default virtual machine configuration.
- * 
- * @param args A @c JavaVMInitArgs , the @c version field must be set before
- * this is called.
- * @return Either @c JNI_OK or an error such as if the Java version is not
- * supported.
- * @since 2024/03/18
- */
 jint JNICALL JNI_GetDefaultJavaVMInitArgs(
 	sjme_attrInOutNotNull void* args)
 {
