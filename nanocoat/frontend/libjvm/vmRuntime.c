@@ -8,85 +8,83 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-void JNICALL JVM_Exit(jint code)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_ActiveProcessorCount(void)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-void JNICALL JVM_Halt(jint code)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_Exit(
+	jint code)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_GC(void)
+void* SJME_JNI_LIB_FUNCTION JNICALL JVM_FindLibraryEntry(
+	void* handle, 
+	const char* name)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jlong JNICALL JVM_MaxObjectInspectionAge(void)
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_FreeMemory(void)
 {
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
 }
 
-void JNICALL JVM_TraceInstructions(jboolean on)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_GC(void)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_TraceMethodCalls(jboolean on)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_Halt(
+	jint code)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jlong JNICALL JVM_TotalMemory(void)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsSupportedJNIVersion(
+	jint version)
 {
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jlong JNICALL JVM_FreeMemory(void)
+void* SJME_JNI_LIB_FUNCTION JNICALL JVM_LoadLibrary(
+	const char* name)
 {
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jlong JNICALL JVM_MaxMemory(void)
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_MaxMemory(void)
 {
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
 }
 
-jint JNICALL JVM_ActiveProcessorCount(void)
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_MaxObjectInspectionAge(void)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
 }
 
-void* JNICALL JVM_LoadLibrary(const char* name)
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_TotalMemory(void)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
 }
 
-void JNICALL JVM_UnloadLibrary(void* handle)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_TraceInstructions(
+	jboolean on)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void* JNICALL JVM_FindLibraryEntry(void* handle, const char* name)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_TraceMethodCalls(
+	jboolean on)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jboolean JNICALL JVM_IsSupportedJNIVersion(jint version)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_UnloadLibrary(
+	void* handle)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }

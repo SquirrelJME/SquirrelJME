@@ -8,13 +8,17 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jstring JNICALL JVM_GetSystemPackage(JNIEnv* env, jstring name)
+jstring SJME_JNI_LIB_FUNCTION JNICALL JVM_GetSystemPackage(
+	JNIEnv* env, 
+	jstring name)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_GetSystemPackages(JNIEnv* env)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetSystemPackages(
+	JNIEnv* env)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }

@@ -49,9 +49,49 @@ extern "C"
 /** Accesses the NanoCoat VM Task in the reserved space. */
 #define SJME_JNI_ENV_TASK(env) ((env)->reserved2)
 	
+/** JNI Library function. */
+#define SJME_JNI_LIB_FUNCTION
+	
 jint JNICALL sjme_jni_JvmDestroyJavaVM(
 	sjme_attrInNotNull JavaVM* jvm);
+	
+#pragma region(notImplemented)
+	
+/** Not implemented (void). */
+#define SJME_LIBJVM_NOT_IMPLEMENTED_VOID \
+	sjme_todo("Impl?")
+	
+/** Not implemented (null). */
+#define SJME_LIBJVM_NOT_IMPLEMENTED_NULL \
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID; \
+	return NULL /* NOLINT */
+	
+/** Not implemented (number). */
+#define SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER \
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID; \
+	return 0 /* NOLINT */
+	
+/** Not implemented (typed). */
+#define SJME_LIBJVM_NOT_IMPLEMENTED_TYPED(t) \
+	t todoIgnored; /* NOLINT */ \
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID; /* NOLINT */ \
+	memset(&todoIgnored, 0, sizeof(todoIgnored)); /* NOLINT */ \
+	return todoIgnored /* NOLINT */
+	
+/** Not implemented (jlong). */
+#define SJME_LIBJVM_NOT_IMPLEMENTED_JLONG \
+	SJME_LIBJVM_NOT_IMPLEMENTED_TYPED(jlong)
+	
+/** Not implemented (jfloat). */
+#define SJME_LIBJVM_NOT_IMPLEMENTED_JFLOAT \
+	SJME_LIBJVM_NOT_IMPLEMENTED_TYPED(jfloat)
+	
+/** Not implemented (jdouble). */
+#define SJME_LIBJVM_NOT_IMPLEMENTED_JDOUBLE \
+	SJME_LIBJVM_NOT_IMPLEMENTED_TYPED(jdouble)
 
+#pragma endregion(notImplemented)
+	
 /*--------------------------------------------------------------------------*/
 
 /* Anti-C++. */

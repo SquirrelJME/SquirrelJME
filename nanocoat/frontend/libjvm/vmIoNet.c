@@ -8,195 +8,226 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jint JNICALL JVM_GetLastErrorString(char* buf, int len)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Accept(
+	jint fileNo,
+	struct sockaddr* him,
+	jint* len)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-char* JNICALL JVM_NativePath(char* path)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Available(
+	jint fileNo,
+	jlong* numBytes)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Open(const char* fname, jint flags, jint mode)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Bind(
+	jint fileNo,
+	struct sockaddr* addr,
+	jint len)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Close(jint fd)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Close(
+	jint fileNo)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Read(jint fd, char* buf, jint nbytes)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Connect(
+	jint fileNo,
+	struct sockaddr* addr, 
+	jint len)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Write(jint fd, char* buf, jint nbytes)
+int SJME_JNI_LIB_FUNCTION JNICALL JVM_GetHostName(
+	char* name, 
+	int namelen)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Available(jint fd, jlong* pbytes)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetLastErrorString(
+	char* buf, 
+	int len)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jlong JNICALL JVM_Lseek(jint fd, jlong offset, jint whence)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetSockName(
+	jint fileNo,
+	struct sockaddr* addr,
+	int* len)
 {
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_SetLength(jint fd, jlong length)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetSockOpt(
+	jint fileNo,
+	int level,
+	int optName,
+	char* optVal,
+	int* optLen)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Sync(jint fd)
+jstring SJME_JNI_LIB_FUNCTION JNICALL JVM_GetTemporaryDirectory(
+	JNIEnv* env)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jint JNICALL JVM_InitializeSocketLibrary(void)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_InitializeSocketLibrary(void)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Socket(jint domain, jint type, jint protocol)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Listen(
+	jint fileNo, 
+	jint count)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_SocketClose(jint fd)
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_Lseek(
+	jint fileNo,
+	jlong offset, 
+	jint whence)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
 }
 
-jint JNICALL JVM_SocketShutdown(jint fd, jint howto)
+char* SJME_JNI_LIB_FUNCTION JNICALL JVM_NativePath(
+	char* path)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jint JNICALL JVM_Recv(jint fd, char* buf, jint nBytes, jint flags)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Open(
+	const char* fname,
+	jint flags,
+	jint mode)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_Send(jint fd, char* buf, jint nBytes, jint flags)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_Timeout(int fd, long timeout)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_Listen(jint fd, jint count)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_Connect(jint fd, struct sockaddr* him, jint len)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_Bind(jint fd, struct sockaddr* him, jint len)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_Accept(jint fd, struct sockaddr* him, jint* len)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_RecvFrom(jint fd,
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Read(
+	jint fileNo, 
 	char* buf,
-	int nBytes,
-	int flags,
-	struct sockaddr* from,
-	int* fromlen)
+	jint len)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_SendTo(jint fd,
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Recv(
+	jint fileNo,
+	char* buf, 
+	jint len, 
+	jint flags)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_RecvFrom(
+	jint fileNo,
 	char* buf,
 	int len,
 	int flags,
-	struct sockaddr* to,
-	int tolen)
+	struct sockaddr* fromAddr,
+	int* fromAddrLen)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_SocketAvailable(jint fd, jint* result)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Send(
+	jint fileNo,
+	char* buf, 
+	jint len,
+	jint flags)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_GetSockName(jint fd, struct sockaddr* him, int* len)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_SendTo(
+	jint fileNo,
+	char* buf,
+	int len,
+	int flags,
+	struct sockaddr* toAddr,
+	int toAddrLen)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_GetSockOpt(jint fd,
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_SetLength(jint fileNo, 
+	jlong length)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_SetSockOpt(
+	jint fileNo,
 	int level,
-	int optname,
-	char* optval,
-	int* optlen)
+	int optName,
+	const char* optVal,
+	int optLen)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_SetSockOpt(jint fd,
-	int level,
-	int optname,
-	const char* optval,
-	int optlen)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Socket(
+	jint domain, 
+	jint type, 
+	jint protocol)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-int JNICALL JVM_GetHostName(char* name, int namelen)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_SocketAvailable(
+	jint fileNo, 
+	jint* result)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jstring JNICALL JVM_GetTemporaryDirectory(JNIEnv* env)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_SocketClose(
+	jint fileNo)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_SocketShutdown(
+	jint fileNo, 
+	jint howto)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Sync(
+	jint fileNo)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Timeout(
+	int fd,
+	long timeout)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_Write(
+	jint fileNo, 
+	char* buf, 
+	jint len)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }

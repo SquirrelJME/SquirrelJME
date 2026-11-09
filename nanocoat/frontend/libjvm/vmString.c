@@ -8,9 +8,12 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jstring JNICALL JVM_InternString(JNIEnv* env, jstring str)
+jstring SJME_JNI_LIB_FUNCTION JNICALL JVM_InternString(
+	JNIEnv* env,
+	jstring str)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
+	

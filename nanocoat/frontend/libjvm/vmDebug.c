@@ -8,75 +8,81 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-void* JNICALL JVM_RegisterSignal(jint sig, void* handler)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_AssertionStatusDirectives(
+	JNIEnv* env,
+	jclass unused)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jboolean JNICALL JVM_RaiseSignal(jint sig)
-{
-	sjme_todo("Impl?");
-	return JNI_FALSE;
-}
-
-jint JNICALL JVM_FindSignal(const char* name)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jboolean JNICALL JVM_DesiredAssertionStatus(JNIEnv* env,
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_DesiredAssertionStatus(
+	JNIEnv* env,
 	jclass unused,
-	jclass cls)
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobject JNICALL JVM_AssertionStatusDirectives(JNIEnv* env, jclass unused)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jint JNICALL JVM_DTraceGetVersion(JNIEnv* env)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jlong JNICALL JVM_DTraceActivate(JNIEnv* env,
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_DTraceActivate(
+	JNIEnv* env,
 	jint version,
-	jstring module_name,
-	jint providers_count,
+	jstring moduleName,
+	jint providersCount,
 	JVM_DTraceProvider* providers)
 {
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
 }
 
-jboolean JNICALL JVM_DTraceIsProbeEnabled(JNIEnv* env, jmethodID method)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_DTraceDispose(
+	JNIEnv* env, 
+	jlong activationHandle)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_DTraceDispose(JNIEnv* env, jlong activation_handle)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_DTraceGetVersion(
+	JNIEnv* env)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jboolean JNICALL JVM_DTraceIsSupported(JNIEnv* env)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_DTraceIsProbeEnabled(
+	JNIEnv* env, 
+	jmethodID method)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobject JNICALL JVM_InitAgentProperties(JNIEnv* env, jobject agent_props)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_DTraceIsSupported(
+	JNIEnv* env)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_FindSignal(
+	const char* name)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_InitAgentProperties(
+	JNIEnv* env,
+	jobject agentProps)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_RaiseSignal(
+	jint signalId)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+void* SJME_JNI_LIB_FUNCTION JNICALL JVM_RegisterSignal(
+	jint signalId, 
+	void* handler)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }

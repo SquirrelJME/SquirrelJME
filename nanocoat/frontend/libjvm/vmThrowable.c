@@ -8,22 +8,26 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-void JNICALL JVM_FillInStackTrace(JNIEnv* env, jobject throwable)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_FillInStackTrace(
+	JNIEnv* env,
+	jobject throwable)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jint JNICALL JVM_GetStackTraceDepth(JNIEnv* env, jobject throwable)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetStackTraceDepth(
+	JNIEnv* env,
+	jobject throwable)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobject JNICALL JVM_GetStackTraceElement(JNIEnv* env,
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_GetStackTraceElement(
+	JNIEnv* env,
 	jobject throwable,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }

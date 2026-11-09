@@ -8,115 +8,145 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-void JNICALL JVM_StartThread(JNIEnv* env, jobject thread)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_CountStackFrames(
+	JNIEnv* env,
+	jobject thread)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-void JNICALL JVM_StopThread(JNIEnv* env, jobject thread, jobject exception)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_CurrentThread(
+	JNIEnv* env,
+	jclass threadClass)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jboolean JNICALL JVM_IsThreadAlive(JNIEnv* env, jobject thread)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_DumpAllStacks(
+	JNIEnv* env,
+	jclass unused)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_SuspendThread(JNIEnv* env, jobject thread)
-{
-	sjme_todo("Impl?");
-}
-
-void JNICALL JVM_ResumeThread(JNIEnv* env, jobject thread)
-{
-	sjme_todo("Impl?");
-}
-
-void JNICALL JVM_SetThreadPriority(JNIEnv* env, jobject thread, jint prio)
-{
-	sjme_todo("Impl?");
-}
-
-void JNICALL JVM_Yield(JNIEnv* env, jclass threadClass)
-{
-	sjme_todo("Impl?");
-}
-
-void JNICALL JVM_Sleep(JNIEnv* env, jclass threadClass, jlong millis)
-{
-	sjme_todo("Impl?");
-}
-
-jobject JNICALL JVM_CurrentThread(JNIEnv* env, jclass threadClass)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jint JNICALL JVM_CountStackFrames(JNIEnv* env, jobject thread)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-void JNICALL JVM_Interrupt(JNIEnv* env, jobject thread)
-{
-	sjme_todo("Impl?");
-}
-
-jboolean JNICALL JVM_IsInterrupted(JNIEnv* env,
-	jobject thread,
-	jboolean clearInterrupted)
-{
-	sjme_todo("Impl?");
-	return JNI_FALSE;
-}
-
-jboolean JNICALL JVM_HoldsLock(JNIEnv* env, jclass threadClass, jobject obj)
-{
-	sjme_todo("Impl?");
-	return JNI_FALSE;
-}
-
-void JNICALL JVM_DumpAllStacks(JNIEnv* env, jclass unused)
-{
-	sjme_todo("Impl?");
-}
-
-jobjectArray JNICALL JVM_GetAllThreads(JNIEnv* env, jclass dummy)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-void JNICALL JVM_SetNativeThreadName(JNIEnv* env,
-	jobject jthread,
-	jstring name)
-{
-	sjme_todo("Impl?");
-}
-
-jobjectArray JNICALL JVM_DumpThreads(JNIEnv* env,
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_DumpThreads(
+	JNIEnv* env,
 	jclass threadClass,
 	jobjectArray threads)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jintArray JNICALL JVM_GetThreadStateValues(JNIEnv* env, jint javaThreadState)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetAllThreads(
+	JNIEnv* env,
+	jclass dummy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_GetThreadStateNames(JNIEnv* env,
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetThreadStateNames(
+	JNIEnv* env,
 	jint javaThreadState,
 	jintArray values)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jintArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetThreadStateValues(
+	JNIEnv* env,
+	jint javaThreadState)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_HoldsLock(
+	JNIEnv* env,
+	jclass threadClass,
+	jobject object)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_Interrupt(
+	JNIEnv* env,
+	jobject thread)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsInterrupted(
+	JNIEnv* env,
+	jobject thread,
+	jboolean clearInterrupted)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsThreadAlive(
+	JNIEnv* env,
+	jobject thread)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_ResumeThread(
+	JNIEnv* env,
+	jobject thread)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_SetNativeThreadName(
+	JNIEnv* env,
+	jobject thread,
+	jstring name)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_SetThreadPriority(
+	JNIEnv* env,
+	jobject thread,
+	jint priority)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_Sleep(
+	JNIEnv* env,
+	jclass threadClass,
+	jlong millis)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_StartThread(
+	JNIEnv* env,
+	jobject thread)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_StopThread(
+	JNIEnv* env,
+	jobject thread,
+	jobject exception)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_SuspendThread(
+	JNIEnv* env,
+	jobject thread)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_Yield(
+	JNIEnv* env,
+	jclass threadClass)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }

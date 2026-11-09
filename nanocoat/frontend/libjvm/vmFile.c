@@ -8,8 +8,11 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-void JNICALL JVM_OnExit(void (*func)(void))
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_OnExit(
+	void (*func)(void))
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
+	

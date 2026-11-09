@@ -1216,6 +1216,8 @@ struct JNINativeInterface
 
 /* No longer needed. */
 #undef SJME_JNI_FUNC__
+	
+#pragma region(jniFunctions)
 
 /**
  * Creates a new Java Virtual Machine.
@@ -1272,6 +1274,8 @@ jint SJME_JNI_IMPORT_EXPORT JNICALL JNI_GetCreatedJavaVMs(
  */
 jint SJME_JNI_IMPORT_EXPORT JNICALL JNI_GetDefaultJavaVMInitArgs(
 	sjme_attrInOutNotNull void* args);
+	
+#pragma endregion(jniFunctions)
 
 /*--------------------------------------------------------------------------*/
 

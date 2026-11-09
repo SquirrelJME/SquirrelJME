@@ -8,55 +8,63 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jint JNICALL JVM_GetArrayLength(JNIEnv* env, jobject arr)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_GetArrayElement(
+	JNIEnv* env, 
+	jobject array,
+	jint index)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_GetArrayElement(JNIEnv* env, jobject arr, jint index)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetArrayLength(
+	JNIEnv* env, 
+	jobject array)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jvalue JNICALL JVM_GetPrimitiveArrayElement(JNIEnv* env,
-	jobject arr,
+jvalue SJME_JNI_LIB_FUNCTION JNICALL JVM_GetPrimitiveArrayElement(
+	JNIEnv* env,
+	jobject array,
 	jint index,
 	jint wCode)
 {
-	jvalue result;
-
-	sjme_todo("Impl?");
-	return result;
+	SJME_LIBJVM_NOT_IMPLEMENTED_TYPED(jvalue);
 }
 
-void JNICALL JVM_SetArrayElement(JNIEnv* env,
-	jobject arr,
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_NewArray(
+	JNIEnv* env, 
+	jclass elementType, 
+	jint length)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_NewMultiArray(
+	JNIEnv* env,
+	jclass elementType,
+	jintArray dim)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_SetArrayElement(
+	JNIEnv* env,
+	jobject array,
 	jint index,
 	jobject val)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_SetPrimitiveArrayElement(JNIEnv* env,
-	jobject arr,
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_SetPrimitiveArrayElement(
+	JNIEnv* env,
+	jobject array,
 	jint index,
-	jvalue v,
+	jvalue val,
 	unsigned char vCode)
 {
-	sjme_todo("Impl?");
-}
-
-jobject JNICALL JVM_NewArray(JNIEnv* env, jclass eltClass, jint length)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jobject JNICALL JVM_NewMultiArray(JNIEnv* env, jclass eltClass, jintArray dim)
-{
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }

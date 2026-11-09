@@ -8,22 +8,18 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-/**
- * Returns the interface version of the JNI library.
- * 
- * @return The JNI library interface version.
- * @since 2025/10/20
- */
-jint JNICALL JVM_GetInterfaceVersion(void)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetInterfaceVersion(void)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-void JNICALL JVM_GetVersionInfo(JNIEnv* env,
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_GetVersionInfo(
+	JNIEnv* env,
 	jvm_version_info* info,
-	size_t info_size)
+	size_t infoSize)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
+	

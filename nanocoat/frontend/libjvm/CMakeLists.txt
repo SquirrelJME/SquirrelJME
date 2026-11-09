@@ -20,6 +20,7 @@ squirreljme_multilib_add_library(libJvm
 	vmDebug.c
 	vmFile.c
 	vmFloat.c
+	vmGone.c
 	vmIoNet.c
 	vmObject.c
 	vmObjectInput.c
@@ -79,6 +80,19 @@ endif()
 # Export/Install JVM static/shared
 squirreljme_multilib_export(libJvm)
 squirreljme_multilib_install(libJvm)
+
+# Exports need to be exactly the same on Windows 32-bit, always
+if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows" AND
+	"${SQUIRRELJME_ARCH}" STREQUAL "ia32" AND
+	SQUIRRELJME_ENABLE_DYLIB)
+	if(SQUIRRELJME_IS_MSVC)
+		target_link_options(libJvmDyLib PRIVATE
+			"/DEF:${CMAKE_CURRENT_SOURCE_DIR}/libjvm.windows.ia32.def")
+	elseif(SQUIRRELJME_IS_GCC)
+		target_link_options(libJvmDyLib PRIVATE
+			"${CMAKE_CURRENT_SOURCE_DIR}/libjvm.windows.ia32.def")
+	endif()
+endif()
 
 # Exporting a JVM/JNI implementation?
 if(SQUIRRELJME_EXPORT_OWN_JNI_JVM)

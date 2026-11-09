@@ -9,25 +9,25 @@
 
 #include "frontend/libjvm/commonJniJvm.h"
 #include "frontend/libjvm/vmOther.h"
+#include "frontend/libjvm/internals.h"
 
-jboolean JNICALL JVM_SupportsCX8(void)
+void* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetManagement(
+	jint version)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-void* JNICALL JVM_GetManagement(jint version)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_SupportsCX8(void)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
 int sjme_jni_EnvTodoImpl(int ignored, ...)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
 int sjme_jni_JvmTodoImpl(int ignored, ...)
 {
-	sjme_todo("Impl?");
-	return sjme_error_notImplemented(0);
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }

@@ -8,25 +8,28 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jobject JNICALL JVM_DoPrivileged(JNIEnv* env,
-	jclass cls,
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_DoPrivileged(
+	JNIEnv* env,
+	jclass classy,
 	jobject action,
 	jobject context,
 	jboolean wrapException)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_GetInheritedAccessControlContext(JNIEnv* env, jclass cls)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_GetInheritedAccessControlContext(
+	JNIEnv* env,
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_GetStackAccessControlContext(JNIEnv* env, jclass cls)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_GetStackAccessControlContext(
+	JNIEnv* env,
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }

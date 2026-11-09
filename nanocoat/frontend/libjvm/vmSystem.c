@@ -8,34 +8,37 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jlong JNICALL JVM_CurrentTimeMillis(JNIEnv* env, jclass ignored)
-{
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
-}
-
-jlong JNICALL JVM_NanoTime(JNIEnv* env, jclass ignored)
-{
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
-}
-
-void JNICALL JVM_ArrayCopy(JNIEnv* env,
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_ArrayCopy(
+	JNIEnv* env,
 	jclass ignored,
 	jobject src,
-	jint src_pos,
-	jobject dst,
-	jint dst_pos,
+	jint srcOff,
+	jobject dest,
+	jint destOff,
 	jint length)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jobject JNICALL JVM_InitProperties(JNIEnv* env, jobject p)
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_CurrentTimeMillis(
+	JNIEnv* env,
+	jclass ignored)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_InitProperties(
+	JNIEnv* env,
+	jobject p)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_NanoTime(
+	JNIEnv* env,
+	jclass ignored)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
 }

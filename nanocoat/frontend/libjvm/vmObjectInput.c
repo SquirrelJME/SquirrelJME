@@ -8,36 +8,37 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jobject JNICALL JVM_AllocateNewObject(JNIEnv* env,
-	jobject obj,
-	jclass currClass,
-	jclass initClass)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jobject JNICALL JVM_AllocateNewArray(JNIEnv* env,
-	jobject obj,
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_AllocateNewArray(
+	JNIEnv* env,
+	jobject object,
 	jclass currClass,
 	jint length)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_LatestUserDefinedLoader(JNIEnv* env)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_AllocateNewObject(
+	JNIEnv* env,
+	jobject object,
+	jclass currClass,
+	jclass initClass)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jclass JNICALL JVM_LoadClass0(JNIEnv* env,
-	jobject obj,
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_LatestUserDefinedLoader(
+	JNIEnv* env)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_LoadClass0(
+	JNIEnv* env,
+	jobject object,
 	jclass currClass,
 	jstring currClassName)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }

@@ -8,52 +8,64 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jint JNICALL JVM_IHashCode(JNIEnv* env, jobject obj)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_Clone(
+	JNIEnv* env, 
+	jobject object)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-void JNICALL JVM_MonitorWait(JNIEnv* env, jobject obj, jlong ms)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_IHashCode(
+	JNIEnv* env,
+	jobject object)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-void JNICALL JVM_MonitorNotify(JNIEnv* env, jobject obj)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_MonitorNotify(
+	JNIEnv* env,
+	jobject object)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_MonitorNotifyAll(JNIEnv* env, jobject obj)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_MonitorNotifyAll(
+	JNIEnv* env, 
+	jobject object)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jobject JNICALL JVM_Clone(JNIEnv* env, jobject obj)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_MonitorWait(
+	JNIEnv* env,
+	jobject object, 
+	jlong millis)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void* JNICALL JVM_RawMonitorCreate(void)
+void* SJME_JNI_LIB_FUNCTION JNICALL JVM_RawMonitorCreate(void)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-void JNICALL JVM_RawMonitorDestroy(void* mon)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_RawMonitorDestroy(
+	void* rawMonitor)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jint JNICALL JVM_RawMonitorEnter(void* mon)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_RawMonitorEnter(
+	void* rawMonitor)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-void JNICALL JVM_RawMonitorExit(void* mon)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_RawMonitorExit(
+	void* rawMonitor)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
+	

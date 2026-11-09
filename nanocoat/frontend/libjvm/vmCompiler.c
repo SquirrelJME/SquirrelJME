@@ -8,42 +8,56 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-void JNICALL JVM_InitializeCompiler(JNIEnv* env, jclass compCls)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_CompileClass(
+	JNIEnv* env, 
+	jclass compileClass, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jboolean JNICALL JVM_IsSilentCompiler(JNIEnv* env, jclass compCls)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_CompileClasses(
+	JNIEnv* env, 
+	jclass classy, 
+	jstring name)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jboolean JNICALL JVM_CompileClass(JNIEnv* env, jclass compCls, jclass cls)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_CompilerCommand(
+	JNIEnv* env,
+	jclass compileClass,
+	jobject arg)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jboolean JNICALL JVM_CompileClasses(JNIEnv* env, jclass cls, jstring jname)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_DisableCompiler(
+	JNIEnv* env, 
+	jclass compileClass)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jobject JNICALL JVM_CompilerCommand(JNIEnv* env, jclass compCls, jobject arg)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_EnableCompiler(
+	JNIEnv* env, 
+	jclass compileClass)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_EnableCompiler(JNIEnv* env, jclass compCls)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_InitializeCompiler(
+	JNIEnv* env, 
+	jclass compileClass)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-void JNICALL JVM_DisableCompiler(JNIEnv* env, jclass compCls)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsSilentCompiler(
+	JNIEnv* env, 
+	jclass compileClass)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }

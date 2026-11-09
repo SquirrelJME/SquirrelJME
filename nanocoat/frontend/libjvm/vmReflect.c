@@ -8,646 +8,708 @@
 // -------------------------------------------------------------------------*/
 
 #include "frontend/libjvm/commonJniJvm.h"
+#include "frontend/libjvm/internals.h"
 
-jclass JNICALL JVM_GetCallerClass(JNIEnv* env, int depth)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_ClassDepth(
+	JNIEnv* env, 
+	jstring name)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jclass JNICALL JVM_FindPrimitiveClass(JNIEnv* env, const char* utf)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_ClassLoaderDepth(
+	JNIEnv* env)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-void JNICALL JVM_ResolveClass(JNIEnv* env, jclass cls)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetClassAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jclass JNICALL JVM_FindClassFromBootLoader(JNIEnv* env, const char* name)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetClassAtIfLoaded(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jclass JNICALL JVM_FindClassFromCaller(JNIEnv* env,
+jdouble SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetDoubleAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_JDOUBLE;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetFieldAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetFieldAtIfLoaded(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jfloat SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetFloatAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_JFLOAT;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetIntAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jlong SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetLongAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_JLONG;
+}
+
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetMemberRefInfoAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetMethodAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetMethodAtIfLoaded(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetSize(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jstring SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetStringAt(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jstring SJME_JNI_LIB_FUNCTION JNICALL JVM_ConstantPoolGetUTF8At(
+	JNIEnv* env,
+	jobject unused,
+	jobject classPool,
+	jint index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_CurrentClassLoader(
+	JNIEnv* env)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_CurrentLoadedClass(
+	JNIEnv* env)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_DefineClass(
+	JNIEnv* env,
 	const char* name,
-	jboolean init,
-	jobject loader,
-	jclass caller)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jclass JNICALL JVM_FindClassFromClassLoader(JNIEnv* env,
-	const char* name,
-	jboolean init,
-	jobject loader,
-	jboolean throwError)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jclass JNICALL JVM_FindClassFromClass(JNIEnv* env,
-	const char* name,
-	jboolean init,
-	jclass from)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jclass JNICALL JVM_FindLoadedClass(JNIEnv* env, jobject loader, jstring name)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jclass JNICALL JVM_DefineClass(JNIEnv* env,
-	const char* name,
-	jobject loader,
+	jobject classLoader,
 	const jbyte* buf,
 	jsize len,
 	jobject pd)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jclass JNICALL JVM_DefineClassWithSource(JNIEnv* env,
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_DefineClassWithSource(
+	JNIEnv* env,
 	const char* name,
-	jobject loader,
+	jobject classLoader,
 	const jbyte* buf,
 	jsize len,
 	jobject pd,
 	const char* source)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jstring JNICALL JVM_GetClassName(JNIEnv* env, jclass cls)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_FindClassFromBootLoader(
+	JNIEnv* env,
+	const char* name)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_GetClassInterfaces(JNIEnv* env, jclass cls)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_FindClassFromCaller(
+	JNIEnv* env,
+	const char* name,
+	jboolean init,
+	jobject classLoader,
+	jclass caller)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jboolean JNICALL JVM_IsInterface(JNIEnv* env, jclass cls)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_FindClassFromClass(
+	JNIEnv* env,
+	const char* name,
+	jboolean init,
+	jclass from)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_GetClassSigners(JNIEnv* env, jclass cls)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_FindClassFromClassLoader(
+	JNIEnv* env,
+	const char* name,
+	jboolean doInit,
+	jobject classLoader,
+	jboolean throwError)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-void JNICALL JVM_SetClassSigners(JNIEnv* env, jclass cls, jobjectArray signers)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_FindLoadedClass(
+	JNIEnv* env,
+	jobject classLoader,
+	jstring name)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_GetProtectionDomain(JNIEnv* env, jclass cls)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_FindPrimitiveClass(
+	JNIEnv* env, 
+	const char* utf)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jboolean JNICALL JVM_IsArrayClass(JNIEnv* env, jclass cls)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCallerClass(
+	JNIEnv* env,
+	int depth)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jboolean JNICALL JVM_IsPrimitiveClass(JNIEnv* env, jclass cls)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassAccessFlags(
+	JNIEnv* env,
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jclass JNICALL JVM_GetComponentType(JNIEnv* env, jclass cls)
+jbyteArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassAnnotations(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jint JNICALL JVM_GetClassModifiers(JNIEnv* env, jclass cls)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassConstantPool(
+	JNIEnv* env,
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_GetDeclaredClasses(JNIEnv* env, jclass ofClass)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassContext(
+	JNIEnv* env)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jclass JNICALL JVM_GetDeclaringClass(JNIEnv* env, jclass ofClass)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassCPEntriesCount(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jstring JNICALL JVM_GetClassSignature(JNIEnv* env, jclass cls)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassCPTypes(
+	JNIEnv* env, 
+	jclass classy, 
+	unsigned char* types)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jbyteArray JNICALL JVM_GetClassAnnotations(JNIEnv* env, jclass cls)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jbyteArray JNICALL JVM_GetClassTypeAnnotations(JNIEnv* env, jclass cls)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jbyteArray JNICALL JVM_GetFieldTypeAnnotations(JNIEnv* env, jobject field)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jbyteArray JNICALL JVM_GetMethodTypeAnnotations(JNIEnv* env, jobject method)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jobjectArray JNICALL JVM_GetClassDeclaredMethods(JNIEnv* env,
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassDeclaredConstructors(
+	JNIEnv* env,
 	jclass ofClass,
 	jboolean publicOnly)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_GetClassDeclaredFields(JNIEnv* env,
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassDeclaredFields(
+	JNIEnv* env,
 	jclass ofClass,
 	jboolean publicOnly)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_GetClassDeclaredConstructors(JNIEnv* env,
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassDeclaredMethods(
+	JNIEnv* env,
 	jclass ofClass,
 	jboolean publicOnly)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jint JNICALL JVM_GetClassAccessFlags(JNIEnv* env, jclass cls)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassFieldsCount(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobject JNICALL JVM_InvokeMethod(JNIEnv* env,
-	jobject method,
-	jobject obj,
-	jobjectArray args0)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassInterfaces(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_NewInstanceFromConstructor(JNIEnv* env,
-	jobject c,
-	jobjectArray args0)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassMethodsCount(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobject JNICALL JVM_GetClassConstantPool(JNIEnv* env, jclass cls)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassModifiers(
+	JNIEnv* env,
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_ConstantPoolGetSize(JNIEnv* env,
-	jobject unused,
-	jobject jcpool)
+jstring SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassName(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jclass JNICALL JVM_ConstantPoolGetClassAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassNameUTF(
+	JNIEnv* env, 
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jstring SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassSignature(
+	JNIEnv* env,
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassSigners(
+	JNIEnv* env, 
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jbyteArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetClassTypeAnnotations(
+	JNIEnv* env, 
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_GetComponentType(
+	JNIEnv* env, 
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
+}
+
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPClassNameUTF(
+	JNIEnv* env, 
+	jclass classy, 
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jclass JNICALL JVM_ConstantPoolGetClassAtIfLoaded(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPFieldClassNameUTF(
+	JNIEnv* env,
+	jclass classy,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_ConstantPoolGetMethodAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPFieldModifiers(
+	JNIEnv* env,
+	jclass classy,
+	int index,
+	jclass calledClass)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPFieldNameUTF(
+	JNIEnv* env,
+	jclass classy,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_ConstantPoolGetMethodAtIfLoaded(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPFieldSignatureUTF(
+	JNIEnv* env,
+	jclass classy,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_ConstantPoolGetFieldAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPMethodClassNameUTF(
+	JNIEnv* env,
+	jclass classy,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobject JNICALL JVM_ConstantPoolGetFieldAtIfLoaded(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPMethodModifiers(
+	JNIEnv* env,
+	jclass classy,
+	int index,
+	jclass calledClass)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPMethodNameUTF(
+	JNIEnv* env, 
+	jclass classy, 
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jobjectArray JNICALL JVM_ConstantPoolGetMemberRefInfoAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetCPMethodSignatureUTF(
+	JNIEnv* env,
+	jclass classy,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jint JNICALL JVM_ConstantPoolGetIntAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
-	jint index)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetDeclaredClasses(
+	JNIEnv* env, 
+	jclass ofClass)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jlong JNICALL JVM_ConstantPoolGetLongAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
-	jint index)
+jclass SJME_JNI_LIB_FUNCTION JNICALL JVM_GetDeclaringClass(
+	JNIEnv* env, 
+	jclass ofClass)
 {
-	jlong r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jfloat JNICALL JVM_ConstantPoolGetFloatAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
-	jint index)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetEnclosingMethodInfo(
+	JNIEnv* env, 
+	jclass ofClass)
 {
-	jfloat r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jdouble JNICALL JVM_ConstantPoolGetDoubleAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
-	jint index)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetFieldIxModifiers(
+	JNIEnv* env, 
+	jclass classy, 
+	int index)
 {
-	jdouble r;
-	sjme_todo("Impl?");
-	return r;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jstring JNICALL JVM_ConstantPoolGetStringAt(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
-	jint index)
+jbyteArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetFieldTypeAnnotations(
+	JNIEnv* env, 
+	jobject field)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jstring JNICALL JVM_ConstantPoolGetUTF8At(JNIEnv* env,
-	jobject unused,
-	jobject jcpool,
-	jint index)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxArgsSize(
+	JNIEnv* env,
+	jclass classy,
+	int index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobjectArray JNICALL JVM_GetMethodParameters(JNIEnv* env, jobject method)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jclass JNICALL JVM_CurrentLoadedClass(JNIEnv* env)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jobject JNICALL JVM_CurrentClassLoader(JNIEnv* env)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jobjectArray JNICALL JVM_GetClassContext(JNIEnv* env)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-jint JNICALL JVM_ClassDepth(JNIEnv* env, jstring name)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_ClassLoaderDepth(JNIEnv* env)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-const char* JNICALL JVM_GetClassNameUTF(JNIEnv* env, jclass cb)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-void JNICALL JVM_GetClassCPTypes(JNIEnv* env, jclass cb, unsigned char* types)
-{
-	sjme_todo("Impl?");
-}
-
-jint JNICALL JVM_GetClassCPEntriesCount(JNIEnv* env, jclass cb)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_GetClassFieldsCount(JNIEnv* env, jclass cb)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_GetClassMethodsCount(JNIEnv* env, jclass cb)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-void JNICALL JVM_GetMethodIxExceptionIndexes(JNIEnv* env,
-	jclass cb,
-	jint method_index,
-	unsigned short* exceptions)
-{
-	sjme_todo("Impl?");
-}
-
-jint JNICALL JVM_GetMethodIxExceptionsCount(JNIEnv* env,
-	jclass cb,
-	jint method_index)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-void JNICALL JVM_GetMethodIxByteCode(JNIEnv* env,
-	jclass cb,
-	jint method_index,
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxByteCode(
+	JNIEnv* env,
+	jclass classy,
+	jint methodIndex,
 	unsigned char* code)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jint JNICALL JVM_GetMethodIxByteCodeLength(JNIEnv* env,
-	jclass cb,
-	jint method_index)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxByteCodeLength(
+	JNIEnv* env,
+	jclass classy,
+	jint methodIndex)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-void JNICALL JVM_GetMethodIxExceptionTableEntry(JNIEnv* env,
-	jclass cb,
-	jint method_index,
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxExceptionIndexes(
+	JNIEnv* env,
+	jclass classy,
+	jint methodIndex,
+	unsigned short* exceptions)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxExceptionsCount(
+	JNIEnv* env,
+	jclass classy,
+	jint methodIndex)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxExceptionTableEntry(
+	JNIEnv* env,
+	jclass classy,
+	jint methodIndex,
 	jint entry_index,
 	JVM_ExceptionTableEntryType* entry)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
 
-jint JNICALL JVM_GetMethodIxExceptionTableLength(JNIEnv* env,
-	jclass cb,
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxExceptionTableLength(
+	JNIEnv* env,
+	jclass classy,
 	int index)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_GetFieldIxModifiers(JNIEnv* env, jclass cb, int index)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxLocalsCount(
+	JNIEnv* env,
+	jclass classy,
+	int index)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_GetMethodIxModifiers(JNIEnv* env, jclass cb, int index)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxMaxStack(
+	JNIEnv* env,
+	jclass classy, 
+	int index)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_GetMethodIxLocalsCount(JNIEnv* env, jclass cb, int index)
+jint SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxModifiers(
+	JNIEnv* env,
+	jclass classy,
+	int index)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jint JNICALL JVM_GetMethodIxArgsSize(JNIEnv* env, jclass cb, int index)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jint JNICALL JVM_GetMethodIxMaxStack(JNIEnv* env, jclass cb, int index)
-{
-	sjme_todo("Impl?");
-	return 0;
-}
-
-jboolean JNICALL JVM_IsConstructorIx(JNIEnv* env, jclass cb, int index)
-{
-	sjme_todo("Impl?");
-	return JNI_FALSE;
-}
-
-jboolean JNICALL JVM_IsVMGeneratedMethodIx(JNIEnv* env, jclass cb, int index)
-{
-	sjme_todo("Impl?");
-	return JNI_FALSE;
-}
-
-const char* JNICALL JVM_GetMethodIxNameUTF(JNIEnv* env, jclass cb, jint index)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-const char* JNICALL JVM_GetMethodIxSignatureUTF(JNIEnv* env,
-	jclass cb,
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxNameUTF(
+	JNIEnv* env, 
+	jclass classy,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-const char* JNICALL JVM_GetCPFieldNameUTF(JNIEnv* env, jclass cb, jint index)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-const char* JNICALL JVM_GetCPMethodNameUTF(JNIEnv* env, jclass cb, jint index)
-{
-	sjme_todo("Impl?");
-	return NULL;
-}
-
-const char* JNICALL JVM_GetCPMethodSignatureUTF(JNIEnv* env,
-	jclass cb,
+const char* SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodIxSignatureUTF(
+	JNIEnv* env,
+	jclass classy,
 	jint index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-const char* JNICALL JVM_GetCPFieldSignatureUTF(JNIEnv* env,
-	jclass cb,
-	jint index)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodParameters(
+	JNIEnv* env, 
+	jobject method)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-const char* JNICALL JVM_GetCPClassNameUTF(JNIEnv* env, jclass cb, jint index)
+jbyteArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetMethodTypeAnnotations(
+	JNIEnv* env, 
+	jobject method)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-const char* JNICALL JVM_GetCPFieldClassNameUTF(JNIEnv* env,
-	jclass cb,
-	jint index)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_GetProtectionDomain(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-const char* JNICALL JVM_GetCPMethodClassNameUTF(JNIEnv* env,
-	jclass cb,
-	jint index)
+jintArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetResourceLookupCache(
+	JNIEnv* env,
+	jobject classLoader,
+	const char* resourceName)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jint JNICALL JVM_GetCPFieldModifiers(JNIEnv* env,
-	jclass cb,
-	int index,
-	jclass calledClass)
+jobjectArray SJME_JNI_LIB_FUNCTION JNICALL JVM_GetResourceLookupCacheURLs(
+	JNIEnv* env,
+	jobject classLoader)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jint JNICALL JVM_GetCPMethodModifiers(JNIEnv* env,
-	jclass cb,
-	int index,
-	jclass calledClass)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_InvokeMethod(
+	JNIEnv* env,
+	jobject method,
+	jobject object,
+	jobjectArray args0)
 {
-	sjme_todo("Impl?");
-	return 0;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-void JNICALL JVM_ReleaseUTF(const char* utf)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsArrayClass(
+	JNIEnv* env, 
+	jclass classy)
 {
-	sjme_todo("Impl?");
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jboolean JNICALL JVM_IsSameClassPackage(JNIEnv* env,
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsConstructorIx(
+	JNIEnv* env,
+	jclass classy, 
+	int index)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsInterface(
+	JNIEnv* env,
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsPrimitiveClass(
+	JNIEnv* env, 
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
+}
+
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsSameClassPackage(
+	JNIEnv* env,
 	jclass class1,
 	jclass class2)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobjectArray JNICALL JVM_GetEnclosingMethodInfo(JNIEnv* env, jclass ofClass)
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_IsVMGeneratedMethodIx(
+	JNIEnv* env, 
+	jclass classy, 
+	int index)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jboolean JNICALL JVM_KnownToNotExist(JNIEnv* env,
-	jobject loader,
+jboolean SJME_JNI_LIB_FUNCTION JNICALL JVM_KnownToNotExist(
+	JNIEnv* env,
+	jobject classLoader,
 	const char* classname)
 {
-	sjme_todo("Impl?");
-	return JNI_FALSE;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NUMBER;
 }
 
-jobjectArray JNICALL JVM_GetResourceLookupCacheURLs(JNIEnv* env,
-	jobject loader)
+jobject SJME_JNI_LIB_FUNCTION JNICALL JVM_NewInstanceFromConstructor(
+	JNIEnv* env,
+	jobject c,
+	jobjectArray args0)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_NULL;
 }
 
-jintArray JNICALL JVM_GetResourceLookupCache(JNIEnv* env,
-	jobject loader,
-	const char* resource_name)
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_ReleaseUTF(
+	const char* utf)
 {
-	sjme_todo("Impl?");
-	return NULL;
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_ResolveClass(
+	JNIEnv* env,
+	jclass classy)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
+}
+
+void SJME_JNI_LIB_FUNCTION JNICALL JVM_SetClassSigners(
+	JNIEnv* env, 
+	jclass classy, 
+	jobjectArray signers)
+{
+	SJME_LIBJVM_NOT_IMPLEMENTED_VOID;
 }
