@@ -1,0 +1,27 @@
+# 2026/11/08
+
+## 15:55
+
+With the launcher rendering issue, I have bisected the following:
+
+```
+bisect complete
+  1 BAD     2026-11-08 07:23:26 aa37bdbe7d05be00
+  3 BAD     2026-11-06 02:34:19 59a70a9561761a25
+  5 BAD     2026-11-01 02:23:24 2749cad4fe4f1976
+  7 BAD     2026-10-31 23:03:14 5f8026440c331d20
+  9 GOOD    2026-10-31 22:32:01 52683cc784ed4a54 CURRENT
+  8 GOOD    2026-10-31 21:24:31 5d24ec4dda08299d
+  6 GOOD    2026-10-30 22:55:38 e5e83182661f7090
+  4 GOOD    2026-10-28 01:45:06 d519c2cd02056f47
+  2 GOOD    2026-10-21 01:45:13 eb30796b5e51b6d1
+```
+
+So `5f8026440c331d20` is bad, but not sure exactly what is bad about it
+since.... maybe fixed mul or div refactor? That would make sense as a texture
+that is scaled is drawn.
+
+## 16:13
+
+That was a simple fix, I changed `int64_t` to `jintNative` when that should
+have been `jlongNative`. Oops.
