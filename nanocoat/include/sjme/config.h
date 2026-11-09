@@ -597,86 +597,6 @@ extern "C" {
 	#endif
 #endif
 
-#if defined(SJME_CONFIG_ROM0)
-	/** ROM 0 Address. */
-	#define SJME_CONFIG_ROM0_ADDR &SJME_CONFIG_ROM0
-#elif !defined(SJME_CONFIG_ROM0_ADDR)
-	/** ROM 0 Address. */
-	#define SJME_CONFIG_ROM0_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM1)
-	/** ROM 1 Address. */
-	#define SJME_CONFIG_ROM1_ADDR &SJME_CONFIG_ROM1
-#elif !defined(SJME_CONFIG_ROM1_ADDR)
-	/** ROM 1 Address. */
-	#define SJME_CONFIG_ROM1_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM2)
-	/** ROM 2 Address. */
-	#define SJME_CONFIG_ROM2_ADDR &SJME_CONFIG_ROM2
-#elif !defined(SJME_CONFIG_ROM2_ADDR)
-	/** ROM 2 Address. */
-	#define SJME_CONFIG_ROM2_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM3)
-	/** ROM 3 Address. */
-	#define SJME_CONFIG_ROM3_ADDR &SJME_CONFIG_ROM3
-#elif !defined(SJME_CONFIG_ROM3_ADDR)
-	/** ROM 3 Address. */
-	#define SJME_CONFIG_ROM3_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM4)
-	/** ROM 4 Address. */
-	#define SJME_CONFIG_ROM4_ADDR &SJME_CONFIG_ROM4
-#elif !defined(SJME_CONFIG_ROM4_ADDR)
-	/** ROM 4 Address. */
-	#define SJME_CONFIG_ROM4_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM5)
-	/** ROM 5 Address. */
-	#define SJME_CONFIG_ROM5_ADDR &SJME_CONFIG_ROM5
-#elif !defined(SJME_CONFIG_ROM5_ADDR)
-	/** ROM 5 Address. */
-	#define SJME_CONFIG_ROM5_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM6)
-	/** ROM 6 Address. */
-	#define SJME_CONFIG_ROM6_ADDR &SJME_CONFIG_ROM6
-#elif !defined(SJME_CONFIG_ROM6_ADDR)
-	/** ROM 6 Address. */
-	#define SJME_CONFIG_ROM6_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM7)
-	/** ROM 7 Address. */
-	#define SJME_CONFIG_ROM7_ADDR &SJME_CONFIG_ROM7
-#elif !defined(SJME_CONFIG_ROM7_ADDR)
-	/** ROM 7 Address. */
-	#define SJME_CONFIG_ROM7_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM8)
-	/** ROM 8 Address. */
-	#define SJME_CONFIG_ROM8_ADDR &SJME_CONFIG_ROM8
-#elif !defined(SJME_CONFIG_ROM8_ADDR)
-	/** ROM 8 Address. */
-	#define SJME_CONFIG_ROM8_ADDR NULL
-#endif
-
-#if defined(SJME_CONFIG_ROM9)
-	/** ROM 9 Address. */
-	#define SJME_CONFIG_ROM9_ADDR &SJME_CONFIG_ROM9
-#elif !defined(SJME_CONFIG_ROM9_ADDR)
-	/** ROM 9 Address. */
-	#define SJME_CONFIG_ROM9_ADDR NULL
-#endif
-
 #if defined(SJME_CONFIG_HAS_MSVC) || SJME_CONFIG_GCC_VERSION_MOST(2, 95)
 	/** 
 	 * Flexible array count.
@@ -729,8 +649,18 @@ extern "C" {
 	/** Free stack allocated data. */
 	#define sjme_alloca_free(ptr) ((void)ptr)
 #endif
+	
+#pragma region(broken)
+	
+/* Anything that may specifically be broken across various toolchains. */
+#include "sjme/configBroken.h"
+	
+#pragma endregion(broken)
 
-#if defined(SJME_CONFIG_HAS_OS_MACOS) && \
+#if defined(SJME_CONFIG_HAS_BROKEN_ATOMICS)
+	/** Use volatile atomics. */
+	#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
+#elif defined(SJME_CONFIG_HAS_OS_MACOS) && \
 	(defined(SJME_CONFIG_HAS_ARCH_IA32) || \
 	defined(SJME_CONFIG_HAS_ARCH_POWERPC))
 	/** Supports macOS Darwin kernel Atomic Access */
@@ -738,9 +668,6 @@ extern "C" {
 #elif defined(SJME_CONFIG_HAS_OS_WINDOWS)
 	/** Supports Windows Atomic Access. */
 	#define SJME_CONFIG_HAS_ATOMIC_WIN32
-#elif defined(SJME_CONFIG_HAS_OS_SONY_PS2)
-	/** Use volatile atomics. */
-	#define SJME_CONFIG_HAS_ATOMIC_VOLATILE
 #elif defined(SJME_CONFIG_HAS_C11) && !defined(__STDC_NO_ATOMICS__)
 	/** Supports C11 atomics. */
 	#define SJME_CONFIG_HAS_ATOMIC_C11
@@ -799,13 +726,8 @@ extern "C" {
 	#define SJME_CONFIG_DYLIB_PATHNAME(x) NULL
 #endif
 
-/* DOS: Threading not supported. */
-/* Nintendo 3DS: devkitPro has broken/unimplemented pthreads. */
-/* Or if proper multithreaded volatiles are not supported. */
 #if !defined(SJME_CONFIG_ONLY_THREAD_SINGLE)
-	#if defined(SJME_CONFIG_HAS_OS_PC_DOS) || \
-		defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
-		defined(SJME_CONFIG_HAS_ATOMIC_VOLATILE)
+	#if defined(SJME_CONFIG_HAS_BROKEN_THREADING)
 		/** Single threaded only (system does not support threads). */
 		#define SJME_CONFIG_ONLY_THREAD_SINGLE
 	#elif !defined(SJME_CONFIG_HAS_THREADS_PTHREAD) && \
@@ -817,9 +739,7 @@ extern "C" {
 
 #if !defined(SJME_CONFIG_HAS_NO_ERRNO_H) && \
 	!defined(SJME_CONFIG_HAS_ERRNO_H)
-	#if defined(SJME_CONFIG_HAS_OS_NINTENDO_3DS) || \
-		defined(SJME_CONFIG_HAS_OS_NINTENDO_WIIU) || \
-		defined(SJME_CONFIG_HAS_OS_NINTENDO_WII) || \
+	#if defined(SJME_CONFIG_HAS_BROKEN_ERRNO_H) || \
 		defined(SJME_CONFIG_HAS_OS_BAREMETAL)
 		/* Disable errno support. */
 		#define SJME_CONFIG_HAS_NO_ERRNO_H 1
@@ -1059,8 +979,7 @@ extern "C" {
 #endif
 
 /* These were not set by CMake? */
-#if defined(SJME_CONFIG_HAS_OS_PALMOS) || \
-	defined(SJME_CONFIG_HAS_SDCC)
+#if defined(SJME_CONFIG_HAS_BROKEN_DYLIB)
 	#if !defined(SJME_CONFIG_HAS_NO_DYLIB_SUPPORT)
 		/** No dynamic libraries are supported. */
 		#define SJME_CONFIG_HAS_NO_DYLIB_SUPPORT
