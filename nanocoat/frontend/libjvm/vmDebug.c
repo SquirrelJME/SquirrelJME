@@ -53,8 +53,9 @@ jlong JNICALL JVM_DTraceActivate(JNIEnv* env,
 	jint providers_count,
 	JVM_DTraceProvider* providers)
 {
+	jlong r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jboolean JNICALL JVM_DTraceIsProbeEnabled(JNIEnv* env, jmethodID method)

@@ -329,8 +329,9 @@ jlong JNICALL JVM_ConstantPoolGetLongAt(JNIEnv* env,
 	jobject jcpool,
 	jint index)
 {
+	jlong r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jfloat JNICALL JVM_ConstantPoolGetFloatAt(JNIEnv* env,
@@ -338,8 +339,9 @@ jfloat JNICALL JVM_ConstantPoolGetFloatAt(JNIEnv* env,
 	jobject jcpool,
 	jint index)
 {
+	jfloat r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jdouble JNICALL JVM_ConstantPoolGetDoubleAt(JNIEnv* env,
@@ -347,8 +349,9 @@ jdouble JNICALL JVM_ConstantPoolGetDoubleAt(JNIEnv* env,
 	jobject jcpool,
 	jint index)
 {
+	jdouble r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jstring JNICALL JVM_ConstantPoolGetStringAt(JNIEnv* env,

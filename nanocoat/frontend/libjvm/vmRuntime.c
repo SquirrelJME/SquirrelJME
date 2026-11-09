@@ -26,8 +26,9 @@ void JNICALL JVM_GC(void)
 
 jlong JNICALL JVM_MaxObjectInspectionAge(void)
 {
+	jlong r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 void JNICALL JVM_TraceInstructions(jboolean on)
@@ -42,20 +43,23 @@ void JNICALL JVM_TraceMethodCalls(jboolean on)
 
 jlong JNICALL JVM_TotalMemory(void)
 {
+	jlong r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jlong JNICALL JVM_FreeMemory(void)
 {
+	jlong r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jlong JNICALL JVM_MaxMemory(void)
 {
+	jlong r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jint JNICALL JVM_ActiveProcessorCount(void)

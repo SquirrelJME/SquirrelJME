@@ -53,8 +53,9 @@ jint JNICALL JVM_Available(jint fd, jlong* pbytes)
 
 jlong JNICALL JVM_Lseek(jint fd, jlong offset, jint whence)
 {
+	jlong r;
 	sjme_todo("Impl?");
-	return 0;
+	return r;
 }
 
 jint JNICALL JVM_SetLength(jint fd, jlong length)
