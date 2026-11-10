@@ -54,7 +54,7 @@ static void sjme_softLong_divImpl(
 	sjme_attrInValue sjme_jint dH)
 {
 	sjme_jint ql, qh, rl, rh, dlUnsigned, dhUnsigned;
-	sjme_jint i, hMask, lMask, cmp;
+	sjme_jint i, hMask, lMask, cmp, bh, bl, cl;
 	sjme_jboolean negNum, negDem, isNeg;
 	
 	/* Divide by zero? */
@@ -148,14 +148,14 @@ static void sjme_softLong_divImpl(
 			/* rx -= __dx; */
 			/* The same as add, but the second operand is negated */
 			/* Negate and check for overflow */
-			int bh = (~dH);
-			int bl = ((~dL) + 1);
+			bh = (~dH);
+			bl = ((~dL) + 1);
 			if (bl == 0)
 				bh++;
 			
 			/* Add the higher/lower parts */
 			rh = rh + bh;
-			int cl = rl + bl;
+			cl = rl + bl;
 			
 			/* If the low addition carried a bit over, then set that bit in */
 			/* the high part */

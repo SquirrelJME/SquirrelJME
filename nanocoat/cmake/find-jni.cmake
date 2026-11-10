@@ -152,6 +152,41 @@ if(NOT SQUIRRELJME_SELF_HOSTED_LIBJVM)
 	endif()
 endif()
 
+# If using own JVM library and there is no library set, force one
+if(SQUIRRELJME_EXPORT_OWN_JNI_JVM)
+	# Which library is being chosen?
+	if("${SQUIRRELJME_SYSTEM}" STREQUAL "windows")
+		set(soName "${CMAKE_IMPORT_LIBRARY_PREFIX}jvm")
+		set(soName "${soName}${CMAKE_STATIC_LIBRARY_SUFFIX}")
+	else()
+		set(soName "${CMAKE_SHARED_LIBRARY_PREFIX}jvm")
+		set(soName "${soName}${CMAKE_SHARED_LIBRARY_SUFFIX}")
+	endif()
+
+	# Where is the library?
+	if(NOT "${SQUIRRELJME_DYLIB_OUTPUT_DIR}" STREQUAL "")
+		set(soDir "${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+	elseif(NOT "${SQUIRRELJME_BINARY_OUTPUT_ROOT}" STREQUAL "")
+		set(soDir "${SQUIRRELJME_BINARY_OUTPUT_ROOT}")
+	elseif(NOT "${SQUIRRELJME_NANOCOAT_BINARY_DIR}" STREQUAL "")
+		set(soDir "${SQUIRRELJME_NANOCOAT_BINARY_DIR}/bin")
+	else()
+		set(soDir "${CMAKE_BINARY_DIR}/bin")
+	endif()
+
+	# Set library to use
+	set(SQUIRRELJME_JVM_LIBRARY "${soDir}/${soName}")
+else()
+	set(SQUIRRELJME_JVM_LIBRARY "")
+endif()
+
+# Use own library instead?
+if(SQUIRRELJME_EXPORT_OWN_JNI_JVM AND
+	"${JAVA_JVM_LIBRARY}" STREQUAL "" AND
+	NOT "${SQUIRRELJME_JVM_LIBRARY}" STREQUAL "")
+	set(JAVA_JVM_LIBRARY "${SQUIRRELJME_JVM_LIBRARY}")
+endif()
+
 # Emit whatever was found of this
 message(STATUS "Has JNI: ${SQUIRRELJME_HAS_JAVA_JNI}")
 message(STATUS "JNI Include: ${SQUIRRELJME_JAVA_JNI_INCLUDE}")

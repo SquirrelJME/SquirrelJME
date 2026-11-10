@@ -151,6 +151,25 @@ if(SQUIRRELJME_EXPORT_OWN_JNI_JVM)
 	export(TARGETS discoveredJvm
 		FILE "${CMAKE_BINARY_DIR}/export/discoveredJvm.cmake"
 		EXPORT_LINK_INTERFACE_LIBRARIES)
+
+	# Replace the JVM library if none specified?
+	if("${JAVA_JVM_LIBRARY}" STREQUAL "")
+		# Purely static?
+		if(NOT SQUIRRELJME_ENABLE_DYLIB)
+			squirreljme_library_path(JAVA_JVM_LIBRARY libJvmStatic)
+
+		# Implibs are used?
+		elseif(SQUIRRELJME_HAS_IMPLIB)
+			squirreljme_implib_path(JAVA_JVM_LIBRARY libJvmDyLib)
+
+		# Use the library directly otherwise
+		else()
+			squirreljme_library_path(JAVA_JVM_LIBRARY libJvmDyLib)
+		endif()
+
+		# More info on libraries
+		message(STATUS "CMake JVM Library (New): ${JAVA_JVM_LIBRARY}")
+	endif()
 endif()
 
 # Executable launcher

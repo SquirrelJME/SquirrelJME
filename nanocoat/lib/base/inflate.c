@@ -300,7 +300,7 @@ static sjme_errorCode sjme_inflate_drain(
 	limit = length - (*drainOff);
 	if (limit > stored)
 		limit = stored;
-		
+	
 	/* Nothing to do? */
 	if (limit == 0)
 		return SJME_ERROR_NONE;

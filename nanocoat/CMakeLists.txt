@@ -256,9 +256,9 @@ if(SQUIRRELJME_IS_DEBUG)
 endif()
 
 # Where should dynamic libraries go when output?
-if(NOT DEFINED SQUIRRELJME_DYLIB_OUTPUT_DIR)
+if("${SQUIRRELJME_DYLIB_OUTPUT_DIR}" STREQUAL "")
 	set(SQUIRRELJME_DYLIB_OUTPUT_DIR
-		"${CMAKE_BINARY_DIR}")
+		"${CMAKE_BINARY_DIR}/bin")
 endif()
 
 # Enable support for testing, this is needed here otherwise testing will not
