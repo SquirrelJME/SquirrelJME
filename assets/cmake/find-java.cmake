@@ -55,7 +55,12 @@ if(SQUIRRELJME_HAS_JAVA)
 
 		# Now declare the target
 		add_custom_target(${targetName}
-			COMMAND "${SQUIRRELJME_GRADLE_EXECUTABLE}"
+			COMMAND "${CMAKE_COMMAND}"
+				"-E" "env"
+				"GRADLE_OPTS=-Dorg.gradle.daemon.idletimeout=5000"
+				"JAVA_OPTS=-Dorg.gradle.daemon.idletimeout=5000"
+				"--"
+				"${SQUIRRELJME_GRADLE_EXECUTABLE}"
 				# Do not make formatting nice looking
 				"--console" "plain"
 				# Continue without failure
@@ -75,8 +80,8 @@ if(SQUIRRELJME_HAS_JAVA)
 				# > Default is 10800000 (3 hours). <-- Bad idea
 				"-Dorg.gradle.daemon.idletimeout=15000"
 				"-Porg.gradle.daemon.idletimeout=15000"
-				"-Dorg.gradle.jvmargs.org.gradle.daemon.idletimeout=15000"
-				"-Porg.gradle.jvmargs.org.gradle.daemon.idletimeout=15000"
+				"-Dorg.gradle.jvmargs.org.gradle.daemon.idletimeout=5000"
+				"-Porg.gradle.jvmargs.org.gradle.daemon.idletimeout=5000"
 				# This does not do anything in modern Gradle other than
 				# generally killing the daemon once the build completes.
 				# It does not always work
@@ -89,8 +94,7 @@ if(SQUIRRELJME_HAS_JAVA)
 
 				"${gradleArgs}"
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-			COMMAND_EXPAND_LISTS
-			USES_TERMINAL)
+			COMMAND_EXPAND_LISTS)
 
 			# Set some SquirrelJME specific properties
 			set_target_properties(${targetName} PROPERTIES
