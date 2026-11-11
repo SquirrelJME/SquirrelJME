@@ -479,11 +479,20 @@ squirreljme_shared_library_exports(libEmulatorBase)
 squirreljme_library_dir(emulatorBaseDir libEmulatorBase)
 squirreljme_library_path(emulatorBasePath libEmulatorBase)
 
+# Where do bundled ZIPs go?
+if(NOT DEFINED SQUIRRELJME_NATIVES_BUNDLE_DIR)
+	set(SQUIRRELJME_NATIVES_BUNDLE_DIR "${CMAKE_BINARY_DIR}/bin")
+endif()
+
+# Make sure the bundle output exists
+file(MAKE_DIRECTORY "${SQUIRRELJME_NATIVES_BUNDLE_DIR}")
+
 # The ZIP goes into the emulator base directory
+set(osArch "${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}")
 set(nativesZip
-	"${emulatorBaseDir}/natives-${SQUIRRELJME_SYSTEM}-${SQUIRRELJME_ARCH}.zip")
+	"${SQUIRRELJME_NATIVES_BUNDLE_DIR}/natives-${osArch}.zip")
 set(nativesZipSimple
-	"${emulatorBaseDir}/natives.zip")
+	"${SQUIRRELJME_NATIVES_BUNDLE_DIR}/natives.zip")
 
 # Determine target natives path and directories
 set(nativesDir "${CMAKE_BINARY_DIR}/bundle/")
