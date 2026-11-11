@@ -22,10 +22,11 @@ if(DEFINED SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
 		SQUIRRELJME_EMULATOR_BASE_IMPORT_DIR)
 endif()
 
-# These cannot directly be tested via if()
-if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_DIR})
-	set(SQUIRRELJME_BINARY_OUTPUT_DIR
-		"$ENV{SQUIRRELJME_BINARY_OUTPUT_DIR}")
+# Directly outputting to the root is used for certain pipelines (libretro)
+# Hence env vars, and as such these cannot be picked checked directly
+if(DEFINED ENV{SQUIRRELJME_BINARY_OUTPUT_ROOT})
+	set(SQUIRRELJME_BINARY_OUTPUT_ROOT
+		"$ENV{SQUIRRELJME_BINARY_OUTPUT_ROOT}")
 endif()
 
 ## Dynamic library output
