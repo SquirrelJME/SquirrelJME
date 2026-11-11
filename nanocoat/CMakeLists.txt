@@ -261,6 +261,16 @@ if("${SQUIRRELJME_DYLIB_OUTPUT_DIR}" STREQUAL "")
 		"${CMAKE_BINARY_DIR}/bin")
 endif()
 
+# Make sure the dylib output directories exist
+if(NOT "${SQUIRRELJME_DYLIB_OUTPUT_DIR}" STREQUAL "")
+	file(MAKE_DIRECTORY "${SQUIRRELJME_DYLIB_OUTPUT_DIR}")
+endif()
+
+# Make sure the binary output directory exist
+if(NOT "${SQUIRRELJME_BINARY_OUTPUT_DIR}" STREQUAL "")
+	file(MAKE_DIRECTORY "${SQUIRRELJME_BINARY_OUTPUT_DIR}")
+endif()
+
 # Enable support for testing, this is needed here otherwise testing will not
 # work at all! Major headache this has caused...
 # From: https://cmake.org/cmake/help/v3.13/command/enable_testing.html
