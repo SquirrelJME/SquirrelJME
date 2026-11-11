@@ -61,6 +61,14 @@ extern "C"
 	/** The size of the thread stack. */
 	#define SJME_NVM_THREAD_STACK_SIZE 65536
 #endif
+	
+#if defined(SJME_CONFIG_HAS_LOW_MEMORY)
+	/** Native stack size. */
+	#define SJME_NVM_THREAD_NATIVE_STACK_SIZE 32768
+#else
+	/** Native stack size. */
+	#define SJME_NVM_THREAD_NATIVE_STACK_SIZE 262144
+#endif
 
 #if defined(SJME_CONFIG_HAS_LOW_MEMORY)
 	/** Debug buffer size for messages. */

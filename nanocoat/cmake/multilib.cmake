@@ -119,6 +119,9 @@ function(squirreljme_multilib_add_static_library libBase)
 	# Always FPIC
 	squirreljme_always_fpic(${libBase}Static)
 
+	# Always use a static runtime where possible
+	squirreljme_target_static_runtime(${libBase}Static)
+
 	# Properties as needed
 	set_target_properties(${libBase}Static PROPERTIES
 		SQUIRRELJME_MULTILIB_TYPE STATIC_LIBRARY

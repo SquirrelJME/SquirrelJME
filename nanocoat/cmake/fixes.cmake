@@ -518,23 +518,56 @@ function(squirreljme_always_fpic target)
 	endif()
 endfunction()
 
+# Was a static runtime applied already?
+define_property(TARGET PROPERTY SQUIRRELJME_APPLIED_STATIC_RUNTIME
+	BRIEF_DOCS "Target should use a static runtime."
+	FULL_DOCS "Target should use a static runtime.")
+
+# Use a static runtime
+function(squirreljme_target_static_runtime target)
+	# Has this been applied before?
+	get_target_property(appliedRt ${target}
+		SQUIRRELJME_APPLIED_STATIC_RUNTIME)
+
+	# This should only be applied once!
+	if("${appliedRt}" STREQUAL "" OR
+		"${appliedRt}" STREQUAL "appliedRt-NOTFOUND")
+		# Apply it!
+		set_target_properties(${target} PROPERTIES
+			SQUIRRELJME_APPLIED_STATIC_RUNTIME YES)
+
+		# Static libgcc?
+		if(SJME_CONFIG_HAS_STATIC_LIBGCC)
+			squirreljme_target_link_options(${target} PRIVATE
+				"-static-libgcc")
+
+		# Static libgcc (-Wl)?
+		elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
+			squirreljme_target_link_options(${target} PRIVATE
+				"-Wl,-static-libgcc")
+
+		# Static libgcc (LINKER:)?
+		elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
+			squirreljme_target_link_options(${target} PRIVATE
+				"LINKER:-static-libgcc")
+
+		# For MSVC, static linking is specified at compile time rather than
+		# at link time, so everything has to be compiled this way to be static
+		elseif(MSVC OR
+			CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
+			CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+			target_compile_options(${target} PRIVATE
+				"/MT")
+		endif()
+	endif()
+endfunction()
+
 function(squirreljme_target_link_fixes target)
 	# Make sure FPIC was properly set
 	squirreljme_always_fpic(${target})
 
-	# Static libgcc?
-	if(SJME_CONFIG_HAS_STATIC_LIBGCC)
-		squirreljme_target_link_options(${target} PRIVATE
-			"-static-libgcc")
-	# Static libgcc (-Wl)?
-	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_WL)
-		squirreljme_target_link_options(${target} PRIVATE
-			"-Wl,-static-libgcc")
-	# Static libgcc (LINKER:)?
-	elseif(SJME_CONFIG_HAS_STATIC_LIBGCC_LINK)
-		squirreljme_target_link_options(${target} PRIVATE
-			"LINKER:-static-libgcc")
-	endif()
+	# Always use a static runtime
+	squirreljme_target_static_runtime(${target})
 endfunction()
 
 # CMake does not support merging static libraries unfortunately, thus we need

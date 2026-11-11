@@ -58,6 +58,7 @@ sjme_errorCode sjme_thread_new(
 	static sjme_jboolean signalInit;
 	sjme_thread result;
 	sjme_thread_id threadId;
+	pthread_attr_t threadAttr;
 
 	if (outThread == NULL || inMain == NULL)
 		return SJME_ERROR_NULL_ARGUMENTS;
@@ -65,9 +66,6 @@ sjme_errorCode sjme_thread_new(
 	/* Clear first. */
 	result = SJME_THREAD_NULL;
 	threadId = 0;
-
-	/* Emit barrier. */
-	sjme_atomic_heavy();
 
 	/* If the signal handler was not yet setup, then set it up. */
 	if (!signalInit)
@@ -79,8 +77,26 @@ sjme_errorCode sjme_thread_new(
 		signalInit = SJME_JNI_TRUE;
 	}
 	
+	/* Setup thread attributes. */
+	memset(&threadAttr, 0, sizeof(threadAttr));
+	pthread_attr_init(&threadAttr);
+	
+	/* Reduce the needed stack size. */
+#if defined(PTHREAD_STACK_MIN)
+	#if (SJME_NVM_THREAD_NATIVE_STACK_SIZE < PTHREAD_STACK_MIN)
+	pthread_attr_setstacksize(&threadAttr,
+		PTHREAD_STACK_MIN);
+	#else
+	pthread_attr_setstacksize(&threadAttr, 
+		SJME_NVM_THREAD_NATIVE_STACK_SIZE);
+	#endif	
+#endif
+
+	/* Emit barrier. */
+	sjme_atomic_heavy();
+	
 	/* Setup new thread. */
-	if (0 != pthread_create(&result, NULL,
+	if (0 != pthread_create(&result, &threadAttr,
 		inMain, anything))
 		return SJME_ERROR_CANNOT_CREATE;
 	threadId = (sjme_thread_id)result;
