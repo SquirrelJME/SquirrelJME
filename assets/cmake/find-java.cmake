@@ -56,13 +56,37 @@ if(SQUIRRELJME_HAS_JAVA)
 		# Now declare the target
 		add_custom_target(${targetName}
 			COMMAND "${SQUIRRELJME_GRADLE_EXECUTABLE}"
+				# Do not make formatting nice looking
 				"--console" "plain"
+				# Continue without failure
 				"--continue"
+				# Parallel causes issues with GNU Makefile, so must be used
+				# here just in case we are not using Ninja. This can also be
+				# the case for other build systems as well.
 				"--no-parallel"
+				# We do not care about watching the filesystem for changes to
+				# "optimize" the Gradle build
 				"--no-watch-fs"
+				# Note that the timeout is VERY important because the Gradle
+				# daemon will cause builds to get stuck as some build systems
+				# will wait until the Gradle daemon dies.
+				# > Gradle Daemon will terminate itself after a specified
+				# > number of idle milliseconds.
+				# > Default is 10800000 (3 hours). <-- Bad idea
+				"-Dorg.gradle.daemon.idletimeout=15000"
+				"-Porg.gradle.daemon.idletimeout=15000"
+				"-Dorg.gradle.jvmargs.org.gradle.daemon.idletimeout=15000"
+				"-Porg.gradle.jvmargs.org.gradle.daemon.idletimeout=15000"
+				# This does not do anything in modern Gradle other than
+				# generally killing the daemon once the build completes.
+				# It does not always work
 				"--no-daemon"
+				# We do not care for a scan to see how fast the build is,
+				# as this is a build system run
 				"--no-scan"
+				# For debugging
 				"--stacktrace"
+
 				"${gradleArgs}"
 			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
 			COMMAND_EXPAND_LISTS
