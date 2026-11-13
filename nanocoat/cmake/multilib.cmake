@@ -9,11 +9,26 @@
 
 # Needed for directory setups
 include(GNUInstallDirs)
-
 # Properties for multilib targets
+## Type of library
 define_property(TARGET PROPERTY SQUIRRELJME_MULTILIB_TYPE
 	BRIEF_DOCS "The type of target this is."
 	FULL_DOCS "The type of target this is.")
+
+## Is this FPIC?
+define_property(TARGET PROPERTY SQUIRRELJME_MULTILIB_FPIC
+	BRIEF_DOCS "If this library is FPIC."
+	FULL_DOCS "If this library is FPIC.")
+
+## The base library name regardless of target
+define_property(TARGET PROPERTY SQUIRRELJME_MULTILIB_NAME
+	BRIEF_DOCS "The base library name."
+	FULL_DOCS "The base library name.")
+
+## Generate a static executable?
+define_property(TARGET PROPERTY SQUIRRELJME_STATIC_EXECUTABLE
+	BRIEF_DOCS "Should the resultant executable be static?"
+	FULL_DOCS "Should the resultant executable be static?")
 
 # Correct Paths
 ## Emulator base import directory
@@ -94,6 +109,7 @@ function(squirreljme_multilib_add_static_library libBase)
 	# Properties as needed
 	set_target_properties(${libBase} PROPERTIES
 		SQUIRRELJME_MULTILIB_TYPE OBJECT_LIBRARY
+		SQUIRRELJME_MULTILIB_NAME "${libBase}"
 		SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC})
 
 	if(squirreljme_bp_version_3_12)
@@ -126,6 +142,7 @@ function(squirreljme_multilib_add_static_library libBase)
 	# Properties as needed
 	set_target_properties(${libBase}Static PROPERTIES
 		SQUIRRELJME_MULTILIB_TYPE STATIC_LIBRARY
+		SQUIRRELJME_MULTILIB_NAME "${libBase}"
 		SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC})
 
 	if(squirreljme_bp_version_3_12)
@@ -179,6 +196,7 @@ function(squirreljme_multilib_add_library libBase)
 		# Properties as needed
 		set_target_properties(${libBase}DyLib PROPERTIES
 			SQUIRRELJME_MULTILIB_TYPE SHARED_LIBRARY
+			SQUIRRELJME_MULTILIB_NAME "${libBase}"
 			SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC})
 
 		if(squirreljme_bp_version_3_12)

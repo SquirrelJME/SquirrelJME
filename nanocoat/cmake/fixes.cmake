@@ -102,20 +102,13 @@ endif()
 
 # Make static executable
 macro(squirreljme_static_executable target)
+	# For MSVC, static linking is specified at compile time rather than
+	# at link time, so everything has to be compiled this way to be static
+
+	# Otherwise, for GCC it is much simpler
 	if(SQUIRRELJME_IS_GCC)
 		squirreljme_target_link_options(${target} BEFORE PRIVATE
 			"-static")
-	elseif(MSVC OR
-		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
-		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-		# For MSVC, static linking is specified at compile time rather than
-		# at link time, so everything has to be compiled this way to be static
-		#target_compile_options(${target} BEFORE PRIVATE
-		#	"/MT")
-
-		# And as such we cannot specify a library to use here
-		#squirreljme_target_link_options(${target} BEFORE PRIVATE
-		#	"/NODEFAULTLIB:library")
 	endif()
 endmacro()
 
@@ -565,9 +558,6 @@ endfunction()
 function(squirreljme_target_link_fixes target)
 	# Make sure FPIC was properly set
 	squirreljme_always_fpic(${target})
-
-	# Always use a static runtime
-	squirreljme_target_static_runtime(${target})
 endfunction()
 
 # CMake does not support merging static libraries unfortunately, thus we need

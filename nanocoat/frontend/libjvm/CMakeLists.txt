@@ -185,9 +185,9 @@ add_dependencies(SquirrelJME
 squirreljme_link_libraries_required(SquirrelJME PRIVATE
 	libJvmStatic)
 
-# Make this static, so it is standalone and requires no library where possible
-squirreljme_target_static_runtime(SquirrelJME)
-squirreljme_static_executable(SquirrelJME)
+## Make this static, so it is standalone and requires no library where possible
+#squirreljme_target_static_runtime(SquirrelJME)
+#squirreljme_static_executable(SquirrelJME)
 
 # Definitions
 target_compile_definitions(SquirrelJME PRIVATE
