@@ -14,7 +14,7 @@ squirreljme_multilib_add_library(libJniSJME
 # Include main headers, and the appropriate JNI as well
 squirreljme_multilib_include_directories(libJniSJME PUBLIC
 	"${CMAKE_SOURCE_DIR}/include")
-target_include_directories(libJniSJME PRIVATE
+squirreljme_multilib_include_directories(libJniSJME PRIVATE
 	"${SQUIRRELJME_JAVA_JNI_INCLUDE}"
 	"${SQUIRRELJME_JAVA_JVM_INCLUDE}"
 	"${CMAKE_SOURCE_DIR}/include/3rdparty/jni")

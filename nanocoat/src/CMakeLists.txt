@@ -96,7 +96,7 @@ squirreljme_multilib_include_directories(Core PUBLIC
 
 # Core needs base to function
 squirreljme_multilib_link_libraries_required(Core PUBLIC
-	BaseStatic)
+	Base)
 
 # The core library is rather important!
 squirreljme_multilib_export(Core)

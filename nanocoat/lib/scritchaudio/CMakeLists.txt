@@ -23,7 +23,7 @@ squirreljme_multilib_include_directories(ScritchAudioCore PUBLIC
 
 # Add in the software mixer always
 squirreljme_multilib_link_libraries_required(ScritchAudioCore PUBLIC
-	BaseStatic
+	Base
 	ScritchAudioSoftMix)
 
 # Export the core library

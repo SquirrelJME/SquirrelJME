@@ -102,20 +102,13 @@ endif()
 
 # Make static executable
 macro(squirreljme_static_executable target)
+	# For MSVC, static linking is specified at compile time rather than
+	# at link time, so everything has to be compiled this way to be static
+
+	# Otherwise, for GCC it is much simpler
 	if(SQUIRRELJME_IS_GCC)
 		squirreljme_target_link_options(${target} BEFORE PRIVATE
 			"-static")
-	elseif(MSVC OR
-		CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR
-		CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-		# For MSVC, static linking is specified at compile time rather than
-		# at link time, so everything has to be compiled this way to be static
-		#target_compile_options(${target} BEFORE PRIVATE
-		#	"/MT")
-
-		# And as such we cannot specify a library to use here
-		#squirreljme_target_link_options(${target} BEFORE PRIVATE
-		#	"/NODEFAULTLIB:library")
 	endif()
 endmacro()
 
@@ -565,9 +558,6 @@ endfunction()
 function(squirreljme_target_link_fixes target)
 	# Make sure FPIC was properly set
 	squirreljme_always_fpic(${target})
-
-	# Always use a static runtime
-	squirreljme_target_static_runtime(${target})
 endfunction()
 
 # CMake does not support merging static libraries unfortunately, thus we need
@@ -581,6 +571,24 @@ define_property(TARGET PROPERTY SQUIRRELJME_TARGET_OBJECTS
 function(squirreljme_link_libraries target scope)
 	# Check the scope
 	squirreljme_check_valid_scope(${scope})
+
+	# Is this a multilib target?
+	get_target_property(targetName ${target} SQUIRRELJME_MULTILIB_NAME)
+	get_target_property(targetMultiType ${target} SQUIRRELJME_MULTILIB_TYPE)
+	if(NOT "${targetName}" STREQUAL "targetName-NOTFOUND")
+		set(targetMulti YES)
+	else()
+		set(targetMulti NO)
+	endif()
+
+	# Is the target meant to be a static executable?
+	get_target_property(targetStaticExe ${target}
+		SQUIRRELJME_STATIC_EXECUTABLE)
+	if(NOT "${targetStaticExe}" STREQUAL "targetStaticExe-NOTFOUND")
+		set(targetStaticExe YES)
+	else()
+		set(targetStaticExe NO)
+	endif()
 
 	# Get the type that the target is
 	get_target_property(targetType ${target} TYPE)
@@ -608,25 +616,66 @@ function(squirreljme_link_libraries target scope)
 
 		# Is this a target?
 		elseif(TARGET "${lib}")
+			# If we are adding to a multilib target, we need to add the
+			# multilib of the same type
+			get_target_property(libName ${lib} SQUIRRELJME_MULTILIB_NAME)
+			get_target_property(libMultiType ${lib} SQUIRRELJME_MULTILIB_TYPE)
+			if((targetMulti OR targetStaticExe) AND
+				NOT "${libName}" STREQUAL "libName-NOTFOUND" AND
+				NOT "${targetMultiType}" STREQUAL "${libMultiType}")
+				# This is going to change
+				set(oldLib "${lib}")
+
+				# Static targets need statically compiled variants, as
+				# compilers such as MSVC require this
+				# Or if we are forcing executables to be static
+				if("${targetMultiType}" STREQUAL "STATIC_LIBRARY" OR
+					targetStaticExe)
+					set(lib "${libName}Static")
+
+				# DyLib targets otherwise need to use the base target as it
+				# is linked for dynamic use
+				else()
+					set(lib "${libName}")
+				endif()
+
+				# Revert if the target does not actually exists
+				if(NOT TARGET "${lib}")
+					set(lib "${oldLib}")
+				endif()
+
+				# Debug
+				if(NOT "${oldLib}" STREQUAL "${lib}")
+					message(STATUS "Adjusting ${target} link library from "
+						"${oldLib} to ${lib}.")
+				endif()
+			endif()
+
 			# Get properties for the target
-			get_target_property(targetObjs ${lib} SQUIRRELJME_TARGET_OBJECTS)
-			get_target_property(targetType ${lib} TYPE)
+			get_target_property(libObjs ${lib} SQUIRRELJME_TARGET_OBJECTS)
+			get_target_property(libType ${lib} TYPE)
+
+			# Always depend on this target
+			add_dependencies(${target} ${lib})
 
 			# If there are target objects, inherit everything
-			if(NOT "${targetObjs}" STREQUAL "targetObjs-NOTFOUND")
+			if(NOT "${libObjs}" STREQUAL "libObjs-NOTFOUND" AND
+				NOT "${libObjs}" STREQUAL "")
+				# Debug
+				message(STATUS "${target} depends on ${lib} objects.")
+
 				# Grab all objects
-				list(APPEND objects "${targetObjs}")
+				list(APPEND objects "${libObjs}")
 
 			# Otherwise normal determination
 			else()
-				# Which type of library is this?
-				get_target_property(type ${lib} TYPE)
+				# Debug
+				message(STATUS "${target} depends on ${lib} eval objects.")
 
-				# Depend on this target
-				add_dependencies(${target} ${lib})
-
-				# Object?
-				if("${type}" STREQUAL "OBJECT_LIBRARY")
+				# Pull in the objects that make up this library, either the
+				# dynamic objects or the static objects
+				if("${libType}" STREQUAL "OBJECT_LIBRARY" OR
+					"${libType}" STREQUAL "STATIC_LIBRARY")
 					# Add all objects to be linked in
 					if(squirreljme_bp_version_3_12)
 						list(APPEND objects
@@ -636,9 +685,11 @@ function(squirreljme_link_libraries target scope)
 							"$<TARGET_OBJECTS:${lib}>")
 					endif()
 
-				# Static or shared?
-				elseif("${type}" STREQUAL "STATIC_LIBRARY" OR
-					"${type}" STREQUAL "SHARED_LIBRARY")
+				# If shared, just link to it
+				elseif("${libType}" STREQUAL "SHARED_LIBRARY")
+					# Debug
+					message(STATUS "${target} depends on ${lib} eval dylib.")
+
 					# Just link against the object
 					if(squirreljme_bp_version_3_12)
 						list(APPEND nonObjects
@@ -650,8 +701,8 @@ function(squirreljme_link_libraries target scope)
 
 				# Unknown target
 				else()
-					message(FATAL_ERROR "Cannot link target ${library} of "
-						"type ${type} to ${target} (${scope})!")
+					message(FATAL_ERROR "Cannot link target ${lib} of "
+						"type ${libType} to ${target} (${scope})!")
 				endif()
 			endif()
 
@@ -695,6 +746,9 @@ function(squirreljme_link_libraries target scope)
 		# Add to sources
 		target_sources(${target} ${scope}
 			${objects})
+	else()
+		# Debug
+		message(STATUS "Target ${target} did not require objects be added.")
 	endif()
 
 	# Link to any non-objects as CMake cannot link objects

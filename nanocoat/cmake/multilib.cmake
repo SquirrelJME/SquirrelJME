@@ -11,9 +11,25 @@
 include(GNUInstallDirs)
 
 # Properties for multilib targets
+## Type of library
 define_property(TARGET PROPERTY SQUIRRELJME_MULTILIB_TYPE
 	BRIEF_DOCS "The type of target this is."
 	FULL_DOCS "The type of target this is.")
+
+## Is this FPIC?
+define_property(TARGET PROPERTY SQUIRRELJME_MULTILIB_FPIC
+	BRIEF_DOCS "If this library is FPIC."
+	FULL_DOCS "If this library is FPIC.")
+
+## The base library name regardless of target
+define_property(TARGET PROPERTY SQUIRRELJME_MULTILIB_NAME
+	BRIEF_DOCS "The base library name."
+	FULL_DOCS "The base library name.")
+
+## Generate a static executable?
+define_property(TARGET PROPERTY SQUIRRELJME_STATIC_EXECUTABLE
+	BRIEF_DOCS "Should the resultant executable be static?"
+	FULL_DOCS "Should the resultant executable be static?")
 
 # Correct Paths
 ## Emulator base import directory
@@ -94,6 +110,7 @@ function(squirreljme_multilib_add_static_library libBase)
 	# Properties as needed
 	set_target_properties(${libBase} PROPERTIES
 		SQUIRRELJME_MULTILIB_TYPE OBJECT_LIBRARY
+		SQUIRRELJME_MULTILIB_NAME "${libBase}"
 		SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC})
 
 	if(squirreljme_bp_version_3_12)
@@ -106,19 +123,10 @@ function(squirreljme_multilib_add_static_library libBase)
 				"$<TARGET_OBJECTS:${libBase}>")
 	endif()
 
-	# Static library
-	if(squirreljme_bp_version_3_12)
-		add_library(${libBase}Static STATIC
-			"${SQUIRRELJME_BP_LIST_DIR}/blank.c"
-			"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
-	else()
-		add_library(${libBase}Static STATIC
-			"${SQUIRRELJME_BP_LIST_DIR}/blank.c"
-			"$<TARGET_OBJECTS:${libBase}>")
-	endif()
-
-	# Always FPIC
-	squirreljme_always_fpic(${libBase}Static)
+	# Static library, these share the sources except they are compiled with
+	# a static runtime instead
+	add_library(${libBase}Static STATIC
+		${sourcesList})
 
 	# Always use a static runtime where possible
 	squirreljme_target_static_runtime(${libBase}Static)
@@ -126,16 +134,17 @@ function(squirreljme_multilib_add_static_library libBase)
 	# Properties as needed
 	set_target_properties(${libBase}Static PROPERTIES
 		SQUIRRELJME_MULTILIB_TYPE STATIC_LIBRARY
+		SQUIRRELJME_MULTILIB_NAME "${libBase}"
 		SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC})
 
 	if(squirreljme_bp_version_3_12)
 		set_target_properties(${libBase}Static PROPERTIES
 			SQUIRRELJME_TARGET_OBJECTS
-				"$<TARGET_GENEX_EVAL:${libBase},$<TARGET_OBJECTS:${libBase}>>")
+	"$<TARGET_GENEX_EVAL:${libBase}Static,$<TARGET_OBJECTS:${libBase}Static>>")
 	else()
 		set_target_properties(${libBase}Static PROPERTIES
 			SQUIRRELJME_TARGET_OBJECTS
-				"$<TARGET_OBJECTS:${libBase}>")
+				"$<TARGET_OBJECTS:${libBase}Static>")
 	endif()
 
 	# Variable reference names
@@ -179,6 +188,7 @@ function(squirreljme_multilib_add_library libBase)
 		# Properties as needed
 		set_target_properties(${libBase}DyLib PROPERTIES
 			SQUIRRELJME_MULTILIB_TYPE SHARED_LIBRARY
+			SQUIRRELJME_MULTILIB_NAME "${libBase}"
 			SQUIRRELJME_MULTILIB_FPIC ${SQUIRRELJME_ENABLE_FPIC})
 
 		if(squirreljme_bp_version_3_12)
@@ -257,11 +267,9 @@ function(squirreljme_multilib_static_include_directories libBase scope)
 	target_include_directories(${libBase} ${scope}
 		${includesList})
 
-	# Only needed for interfaces?
-	if(NOT "${scope}" STREQUAL "PRIVATE")
-		target_include_directories(${libBase}Static INTERFACE
-			${includesList})
-	endif()
+	# And for static as well
+	target_include_directories(${libBase}Static ${scope}
+		${includesList})
 endfunction()
 
 # Add compile definitions to multilib static library
@@ -424,11 +432,9 @@ function(squirreljme_multilib_link_directories libBase scope)
 	list(REMOVE_AT libraryDirs 0)
 	list(REMOVE_AT libraryDirs 0)
 
-	# Add for the static library, but only at the interface level
-	if(NOT "${scope}" STREQUAL "PRIVATE")
-		target_link_directories(${libBase}Static INTERFACE
-			${libraryDirs})
-	endif()
+	# Add for the static library
+	target_link_directories(${libBase}Static ${scope}
+		${libraryDirs})
 
 	# Add for the dynamic library as well
 	if(SQUIRRELJME_ENABLE_DYLIB)
@@ -454,11 +460,9 @@ function(squirreljme_multilib_static_link_libraries_required libBase scope)
 	list(REMOVE_AT libraryPaths 0)
 	list(REMOVE_AT libraryPaths 0)
 
-	# Add for the static library, but only at the public/interface level
-	if(NOT "${scope}" STREQUAL "PRIVATE")
-		squirreljme_link_libraries_required(${libBase}Static ${scope}
-			${libraryPaths})
-	endif()
+	# Add for the static library
+	squirreljme_link_libraries_required(${libBase}Static ${scope}
+		${libraryPaths})
 
 	# Otherwise set transient libraries to be included, for use with
 	# $<TARGET_PROPERTY:Target,SQUIRRELJME_LINK_LIBRARIES>

@@ -68,9 +68,9 @@ target_include_directories(libJvm PUBLIC
 
 # Libraries needed to be linked with for the DyLib to function
 squirreljme_multilib_link_libraries_required(libJvm PUBLIC
-	CoreStatic
-	ScritchAudioCoreStatic
-	ScritchUiCoreStatic)
+	Core
+	ScritchAudioCore
+	ScritchUiCore)
 
 # Exports for Windows, etc.
 if(SQUIRRELJME_ENABLE_DYLIB)
@@ -181,13 +181,9 @@ add_dependencies(SquirrelJME
 	ScritchAudio
 	ScritchUi)
 
-# Statically link the JVM
+# Include the entire JVM built-in
 squirreljme_link_libraries_required(SquirrelJME PRIVATE
-	libJvmStatic)
-
-# Make this static, so it is standalone and requires no library where possible
-squirreljme_target_static_runtime(SquirrelJME)
-squirreljme_static_executable(SquirrelJME)
+	libJvm)
 
 # Definitions
 target_compile_definitions(SquirrelJME PRIVATE
