@@ -13,6 +13,7 @@ import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
 import cc.squirreljme.runtime.cldc.util.StreamUtils;
+import cc.squirreljme.runtime.midlet.MeepRuntime;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -215,9 +216,15 @@ public class PNGReader
 					case 0x74524E53:
 						this.__parseAlpha(data, len);
 						break;
+						
+						// Suggested Palette (MIDP 3+)
+					case 0x73504C54:
+						if (MeepRuntime.versionLeast(3, 0))
+							Debugging.todoNote("MIDP 3 PNG 1.2 sPLT");
+						break;
 					
-						// Unknown, ignore
-						// Ignore the CRC for chunks we are not looking at 
+						// Unknown, ignore the CRC for chunks we are not
+						// looking at 
 					default:
 						ignoreCrc = true;
 						break;
@@ -227,14 +234,17 @@ public class PNGReader
 				beforeClose = crc.checksum();
 			}
 			
-			/* {@squirreljme.error EB0u CRC mismatch in PNG data chunk.
-			(Desired CRC; Actual CRC; CRC Before close; Last chunk type 
-			read)} */
+			// MIDP 2 is PNG 1.0 and MIDP 3 is PNG 1.2, these are effectively
+			// the same as 1.2 introduces a few more chunks. The wording in the
+			// specification is exactly: "It is strongly recommended that
+			// decoders should verify the CRC on each chunk.", as this is
+			// a recommendation and not a requirement, this is a warning
 			int want = in.readInt();
 			int real = crc.checksum();
 			if (!ignoreCrc && want != real && want != beforeClose)
-				throw new IOException(String.format("EB0u %08x %08x %08x %08x",
-					want, real, beforeClose, lasttype));
+				Debugging.notice("Ignoring invalid CRC PNG due to RFC " +
+					"SHOULD (chunk %08x wants %08x, it was %08x or %08x).",
+					lasttype, want, real, beforeClose);
 		}
 		
 		/* {@squirreljme.error EB0v No image data has been loaded.} */
