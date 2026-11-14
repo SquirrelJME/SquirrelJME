@@ -3,7 +3,8 @@
 This is the documentation of the SquirrelJME supply chain. Effectively, this
 is the list of projects, services, and otherwise that are hard and/or soft
 dependencies that the project relies upon for existing. This only includes
-direct proper noun dependencies or direct pseudo dependencies.
+direct proper noun dependencies or direct pseudo dependencies that are
+needed to build SquirrelJME.
 
 This does not include obvious things such as an internet connection, package
 repositories, developers, or operating systems.
@@ -11,19 +12,78 @@ repositories, developers, or operating systems.
 SquirrelJME has the goal to be as self-hosted and self-reliable as possible,
 it is a preservation platform.
 
- * _C89 Compiler_
- * [CMake](https://cmake.org)
- * [Fossil](https://www.fossil-scm.org/)
+ * [Apache Commons Collections 4](
+https://commons.apache.org/proper/commons-collections/) (Building)
+   * Version: 4.5.0-M3 (December 19, 2024)
+   * AI Usage: None could be found for this version.
+ * _C Compiler_ (Building)
+   * Minimum Version: C89 (December 14, 1989)
+   * AI Usage: As this is a standardized language, the consensus is that
+     since 2024 any MSVC, GCC, and/or LLVM based compiler has extensively used
+     AI for development.
+ * [CMake](https://cmake.org/) (Building)
+   * Minimum Version: 3.1 (December 17, 2014)
+   * Maximum Version: 3.31 (November 7, 2024)
+   * AI Usage: Very possible with the later sub-releases of 3.31 as Kitware
+     is quoted "A Trusted Partner for Custom Software and Advanced AI
+     Research". Any version at least 4.0 has development history that
+     extensively uses AI.
+ * [Fossil](https://www.fossil-scm.org/) (Version Control)
    * This is for source control and history, the project does not rely upon it
      to exist and can work off extracted source archives. If you have the
      source code you do not need Fossil, just that you will lose out on getting
      the commit hash for the version number.
- * [Gradle](https://gradle.com)
- * [Install4J](https://www.ej-technologies.com/install4j)
+   * Minimum Tested Version: 1.28 (January 27, 2014)
+   * AI Usage: Any version released since 2026, the exact quantity is unknown.
+ * [Gradle](https://gradle.com/) (Building)
+   * Version: 7.6.6 (July 4, 2025)
+   * AI Usage: Possible for 7.6.6 although this is a minor update to an
+     unsupported Gradle version at the time. Newer versions are developed with
+     AI extensively as Develocity is quoted "Give AI the context to deliver
+     software, with Governance and Efficiency". Newer versions extensively
+     use AI for development.
+ * IBan4J (Building)
+   * The original website for the project is no longer online.
+   * Version: 3.27 (September 30, 2023)
+   * AI Usage: None. Project ownership has since been transferred of which
+     the developers utilize AI extensively for development.
+ * [Install4J](https://www.ej-technologies.com/install4j) (Snapshots)
    * This is not strictly needed, however it provides convenient installers
      which are simple and easy to use.
- * [Jasmin](https://jasmin.sourceforge.net)
- * _Java 8 Compiler_
- * [ProGuard](https://www.guardsquare.com/proguard)
+   * Version: 12 (October 31, 2025)
+   * AI Usage: Unknown for this version, this is a closed-source commercial
+     product. Install4J 13 includes an "AI agent skill" along with other
+     AI integration, thus it is extremely likely that it is
+     utilizing AI in development.
+ * [Jasmin](https://jasmin.sourceforge.net/) (Building)
+   * Version: 3.0.3 (December 29, 2021)
+   * AI Usage: None.
+ * _Java Compiler_ (Building)
+   * Minimum Version: 1.8 (March 18, 2014)
+   * AI Usage: None for this version, however any release since 2024 has used
+     AI in bug discovery. OpenJDK's interim policy as of this writing only
+     permits bug discovery and not code generation.
+ * [OpenCSV](https://opencsv.sourceforge.net/) (Building)
+   * Version: 5.10 (January 12, 2025)
+   * AI Usage: None could be found for this version, it is very unlikely as
+     this is a project which has a single purpose and is effectively complete.
+ * [ProGuard](https://www.guardsquare.com/proguard) (Building)
    * This is not strictly needed, it is intended to be used to shrink the
      resultant Jars as much as possible.
+   * Version: 7.3.2 (March 17, 2023)
+   * AI Usage: None could be found for this version. For newer versions this
+     is unknown, there is no indication that it has been adopted.
+ * [Project Lombok](https://projectlombok.org/) (Building)
+   * Version: 1.18.36 (November 15, 2024)
+   * AI Usage: None could be found for this version. For newer versions it is
+     unlikely unless a passerby contributor has lied about via AI. The current
+     maintainers of the project are openly hostile to AI, users of AI,
+     companies that use AI, the companies that control the entirety of
+     the AI market, and the products/services they use being destroyed by AI.
+ * Shadow Jar (Building)
+   * This is not strictly needed, it is only used to build the Standalone
+     variant of Hosted and SpringCoat.
+   * The original website for the project is no longer online.
+   * Version: 7.1.2 (December 29, 2021)
+   * AI Usage: None for this version. Project ownership has since been
+     transferred to GradleUp, which extensively utilizes AI.
