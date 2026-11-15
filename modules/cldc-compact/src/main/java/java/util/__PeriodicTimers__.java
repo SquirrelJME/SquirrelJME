@@ -52,7 +52,7 @@ final class __PeriodicTimers__
 			{
 				// What is the current time?
 				long nowTime = System.nanoTime();
-				long sleepOffset = 10_000L;
+				long sleepOffset = 30_000L;
 				
 				// Round-robin through timers to find one to execute
 				__PeriodicTimer__ soonest = null;
@@ -78,12 +78,17 @@ final class __PeriodicTimers__
 						soonest = check;
 				}
 				
+				// Debugging
+				if (Debugging.verbose())
+					Debugging.debugNote("Timer cycle: %d %08x",
+						nowTime, System.identityHashCode(soonest));
+				
 				// No timer to run, sleep for a while
 				if (soonest == null)
 					try
 					{
 						// Debugging
-						if (Debugging.enabled())
+						if (Debugging.verbose())
 							Debugging.debugNote("Timer sleep: %d ms",
 								sleepOffset);
 						
@@ -105,9 +110,9 @@ final class __PeriodicTimers__
 				try
 				{
 					// Debugging
-					if (Debugging.enabled())
+					if (Debugging.verbose())
 						Debugging.debugNote("Exec timer: %s %08x",
-							soonest.getClass().getName(),
+							soonest._task.getClass().getName(),
 							System.identityHashCode(soonest));
 					
 					// Run the task

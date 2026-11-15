@@ -59,6 +59,12 @@ public class MidletMain
 	public static final Command BROWSE_LIBRARY_COMMAND =
 		new Command("Browse Library", Command.ITEM, 99);
 	
+	/** The recovery period. */
+	static final int RECOVER_PERIOD = 8000;
+	
+	/** The recovery delay. */ 
+	static final int RECOVER_DELAY = 10000;
+	
 	/** Timer used to reschedule things. */
 	static final Timer _TIMER =
 		new Timer("LauncherRecoverThread");
@@ -279,7 +285,9 @@ public class MidletMain
 		// Set a timer to periodically check if we should show the program
 		// list again
 		MidletMain._TIMER.schedule(new __ReControlTask__(
-			MidletMain._MAIN_DISPLAY, activeTask), 2000, 2000);
+			MidletMain._MAIN_DISPLAY, activeTask),
+			MidletMain.RECOVER_DELAY,
+			MidletMain.RECOVER_PERIOD);
 	}
 	
 	/**
