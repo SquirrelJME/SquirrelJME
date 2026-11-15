@@ -47,7 +47,8 @@ public abstract class TimerTask
 	 *
 	 * If this task has not been scheduled, this value is undefined.
 	 *
-	 * @return The scheduled execution time.
+	 * @return The scheduled execution time, if this has not been scheduled
+	 * then the return value is undefined.
 	 * @since 2018/12/11
 	 */
 	@Api

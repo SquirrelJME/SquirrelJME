@@ -107,14 +107,18 @@ public class Timer
 		throws IllegalArgumentException, IllegalStateException,
 			NullPointerException
 	{
-		if (__task == null)
+		if (__task == null || __time == null)
 			throw new NullPointerException("NARG");
+		
+		// Obtain the clock basis
+		long basisUtcs = System.currentTimeMillis();
+		long basisMono = System.nanoTime(); 
 		
 		// Use generic periodic forward
 		__PeriodicTimers__.__instance().__schedule(
 			new __PeriodicTimer__(this, __task, __time,
 				Long.MIN_VALUE,
-				false, false, 0));
+				false, false, 0, basisUtcs, basisMono));
 	}
 	
 	/**
@@ -143,10 +147,15 @@ public class Timer
 		if (__period <= 0)
 			throw new IllegalArgumentException("NEGV");
 		
+		// Obtain the clock basis
+		long basisUtcs = System.currentTimeMillis();
+		long basisMono = System.nanoTime();
+		
 		// Use generic periodic forward
 		__PeriodicTimers__.__instance().__schedule(
 			new __PeriodicTimer__(this, __task, __time,
-				Long.MIN_VALUE, true, false, __period));
+				Long.MIN_VALUE, true, false, __period, 
+				basisUtcs, basisMono));
 	}
 	
 	/**
@@ -172,10 +181,14 @@ public class Timer
 		if (__delay < 0)
 			throw new IllegalArgumentException("NEGV");
 		
+		// Obtain the clock basis
+		long basisUtcs = System.currentTimeMillis();
+		long basisMono = System.nanoTime();
+		
 		// Use generic periodic forward
 		__PeriodicTimers__.__instance().__schedule(
 			new __PeriodicTimer__(this, __task, null, __delay,
-				false, false, 0));
+				false, false, 0, basisUtcs, basisMono));
 	}
 	
 	/**
@@ -204,10 +217,14 @@ public class Timer
 		if (__delay < 0 || __period <= 0)
 			throw new IllegalArgumentException("NEGV");
 		
+		// Obtain the clock basis
+		long basisUtcs = System.currentTimeMillis();
+		long basisMono = System.nanoTime();
+		
 		// Use generic periodic forward
 		__PeriodicTimers__.__instance().__schedule(
 			new __PeriodicTimer__(this, __task, null, __delay,
-				true, false, __period));
+				true, false, __period, basisUtcs, basisMono));
 	}
 	
 	/**
@@ -238,10 +255,15 @@ public class Timer
 		if (__period <= 0)
 			throw new IllegalArgumentException("NEGV");
 		
+		// Obtain the clock basis
+		long basisUtcs = System.currentTimeMillis();
+		long basisMono = System.nanoTime();
+		
 		// Use generic periodic forward
 		__PeriodicTimers__.__instance().__schedule(
 			new __PeriodicTimer__(this, __task, __first,
-				Long.MIN_VALUE, true, true, __period));
+				Long.MIN_VALUE, true, true, __period,
+				basisUtcs, basisMono));
 	}
 	
 	/**
@@ -271,10 +293,14 @@ public class Timer
 		if (__delay < 0 || __period <= 0)
 			throw new IllegalArgumentException("NEGV");
 		
+		// Obtain the clock basis
+		long basisUtcs = System.currentTimeMillis();
+		long basisMono = System.nanoTime();
+		
 		// Use generic periodic forward
 		__PeriodicTimers__.__instance().__schedule(
 			new __PeriodicTimer__(this, __task, null, __delay,
-				true, true, __period));
+				true, true, __period, basisUtcs, basisMono));
 	}
 }
 
