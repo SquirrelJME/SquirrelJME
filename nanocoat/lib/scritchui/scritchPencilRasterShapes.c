@@ -343,7 +343,7 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 	sjme_errorCode error;
 	sjme_scritchui_pencilDrawHorizFunc drawHoriz;
 	sjme_jint yMin, yMax, intersectionCount, allocBytes, allocBytesI;
-	sjme_jint xStart, xEnd, dy, i, j, y, ix;
+	sjme_jint xStart, xEnd, dy, i, j, y, temp;
 	sjme_jint* xPoints;
 	sjme_jint* yPoints;
 	sjme_jint* intersections;
@@ -453,12 +453,15 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 				dy = yPoints[j] - yPoints[i];
 				if (dy != 0)
 				{
-					ix = (xPoints[i] * dy) + ((y - yPoints[i]) *
-						(xPoints[j] - xPoints[i]));
-					ix /= dy;
-					
+					temp = (y - yPoints[i]) * (xPoints[j] - xPoints[i]);
+
+					if ((temp ^ dy) < 0 && (temp % dy) != 0)
+						temp = (temp - (dy - 1)) / dy;
+					else
+						temp /= dy;
+
 					if (intersectionCount < maxIntersections)
-						intersections[intersectionCount++] = ix;
+						intersections[intersectionCount++] = xPoints[i] + temp;
 				}
 			}
 		}
@@ -473,7 +476,9 @@ sjme_errorCode sjme_attrOptimize sjme_scritchpen_corePrim_fillPolygon(
 			if (i + 1 < intersectionCount)
 			{
 				xStart = sjme_max(intersections[i], clipLine->s.x);
-				xEnd = sjme_min(intersections[i + 1], clipLine->e.x);
+				
+				/* End pixel must be included in drawing, fixes gaps. */
+				xEnd = sjme_min(intersections[i + 1] + 1, clipLine->e.x);
 
 				/* Start > End is an invalid area we can just skip */
 				if (xEnd <= xStart)
