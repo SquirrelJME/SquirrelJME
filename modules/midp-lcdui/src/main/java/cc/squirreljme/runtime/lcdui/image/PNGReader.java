@@ -12,14 +12,12 @@ package cc.squirreljme.runtime.lcdui.image;
 import cc.squirreljme.jvm.mle.ObjectShelf;
 import cc.squirreljme.jvm.mle.callbacks.NativeImageLoadCallback;
 import cc.squirreljme.runtime.cldc.debug.Debugging;
-import cc.squirreljme.runtime.cldc.util.StreamUtils;
 import cc.squirreljme.runtime.midlet.MeepRuntime;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import net.multiphasicapps.io.ByteDeque;
 import net.multiphasicapps.io.CRC32Calculator;
 import net.multiphasicapps.io.ChecksumInputStream;
 import net.multiphasicapps.io.SizeLimitedInputStream;
@@ -146,7 +144,7 @@ public class PNGReader
 			
 			// Setup data stream for reading packet data, do not propogate
 			// close
-			int lasttype = 0;
+			int lastType = 0;
 			int beforeClose = 0;
 			boolean ignoreCrc = false;
 			CRC32Calculator crc = new CRC32Calculator(true, true,
@@ -157,7 +155,7 @@ public class PNGReader
 			{
 				// Read the packet type
 				int type = data.readInt();
-				lasttype = type;
+				lastType = type;
 				
 				// End of PNG, stop processing
 				if (type == 0x49454E44)
@@ -191,13 +189,13 @@ public class PNGReader
 							// additionally so that the decoder does not need
 							// to worry about the data being compressed at
 							// all...
-							byte[] xtrachunk = PNGReader.__chunkLater(data);
+							byte[] xtrachunk = __PNGUtil__.__chunkLater(data);
 							
 							// Setup new array which contains the original
 							// data but has more space
-							int gn = imageChunk.length,
-								xn = xtrachunk.length,
-								nl = gn + xn;
+							int gn = imageChunk.length;
+							int xn = xtrachunk.length;
+							int nl = gn + xn;
 							imageChunk = Arrays.copyOf(imageChunk, nl);
 							
 							// Write in all the data
@@ -209,7 +207,7 @@ public class PNGReader
 						
 						// The first chunk
 						else
-							imageChunk = PNGReader.__chunkLater(data);
+							imageChunk = __PNGUtil__.__chunkLater(data);
 						break;
 						
 						// Transparency information
@@ -244,7 +242,7 @@ public class PNGReader
 			if (!ignoreCrc && want != real && want != beforeClose)
 				Debugging.notice("Ignoring invalid CRC PNG due to RFC " +
 					"SHOULD (chunk %08x wants %08x, it was %08x or %08x).",
-					lasttype, want, real, beforeClose);
+					lastType, want, real, beforeClose);
 		}
 		
 		/* {@squirreljme.error EB0v No image data has been loaded.} */
@@ -324,21 +322,21 @@ public class PNGReader
 		switch (colorType)
 		{
 			// Grayscale or Indexed
-			case 0:
-			case 3:
-				return PNGReader.__roundNumBitsToByte(bitDepth);
+			case __PNGConst__.COLORTYPE_GRAYSCALE:
+			case __PNGConst__.COLORTYPE_INDEXED:
+				return __PNGUtil__.__roundNumBitsToByte(bitDepth);
 				
 				// RGB
-			case 2:
-				return PNGReader.__roundNumBitsToByte(bitDepth * 3);
+			case __PNGConst__.COLORTYPE_RGB:
+				return __PNGUtil__.__roundNumBitsToByte(bitDepth * 3);
 			
 				// RGBA
-			case 6:
-				return PNGReader.__roundNumBitsToByte(bitDepth * 4);
+			case __PNGConst__.COLORTYPE_RGBA:
+				return __PNGUtil__.__roundNumBitsToByte(bitDepth * 4);
 			
 				// YA (Grayscale + Alpha), aka 4
 			default:
-				return PNGReader.__roundNumBitsToByte(bitDepth * 2);
+				return __PNGUtil__.__roundNumBitsToByte(bitDepth * 2);
 		}
 	}
 	
@@ -454,8 +452,9 @@ public class PNGReader
 		
 		/* {@squirreljme.error EB12 Invalid PNG bit depth and color type
 		combination. (The color type; The bit depth)} */
-		if ((bitDepth < 8 && (colorType != 0 && colorType != 3)) ||
-			(bitDepth > 8 && colorType != 3))
+		if ((bitDepth < 8 && (colorType != __PNGConst__.COLORTYPE_GRAYSCALE && 
+				colorType != __PNGConst__.COLORTYPE_INDEXED)) ||
+			(bitDepth > 8 && colorType != __PNGConst__.COLORTYPE_INDEXED))
 			throw new IOException(String.format("EB12 %d %d", colorType,
 				bitDepth));
 			
@@ -465,14 +464,15 @@ public class PNGReader
 		
 		// These two color types have alpha, this field may be set later on
 		// if a transparency chunk was found
-		boolean hasalpha;
-		this._hasAlpha = (hasalpha = (colorType == 4 || colorType == 6));
+		boolean hasAlpha = (colorType == __PNGConst__.COLORTYPE_4 ||
+			colorType == __PNGConst__.COLORTYPE_RGBA);
+		this._hasAlpha = hasAlpha;
 		
 		// Determine number of channels
 		int channels = (colorType == 0 || colorType == 3 ? 1 :
-			(colorType == 2 ? 3 :
-			(colorType == 4 ? 2 :
-			(colorType == 6 ? 4 : 1))));
+			(colorType == __PNGConst__.COLORTYPE_RGB ? 3 :
+			(colorType == __PNGConst__.COLORTYPE_4 ? 2 :
+			(colorType == __PNGConst__.COLORTYPE_RGBA ? 4 : 1))));
 		
 		// Scan length, 7 extra bits are added for any needed padding if there
 		// is any
@@ -480,9 +480,9 @@ public class PNGReader
 		
 		/* {@squirreljme.error EB13 Only deflate compressed PNG images are
 		supported. (The compression method)} */
-		int compressionmethod = __in.readUnsignedByte();
-		if (compressionmethod != 0)
-			throw new IOException(String.format("EB13 %d", compressionmethod));
+		int compMethod = __in.readUnsignedByte();
+		if (compMethod != 0)
+			throw new IOException(String.format("EB13 %d", compMethod));
 		
 		/* {@squirreljme.error EB14 Only adapative filtered PNGs are supported.
 		(The filter type)} */
@@ -566,7 +566,8 @@ public class PNGReader
 		
 		// Notify that a palette was set
 		this._wantIndexed =
-			this.loader.setPalette(palette, 0, maxColors, true, -1);
+			this.loader.setPalette(palette, 0, maxColors, 
+				true, -1);
 	}
 	
 	/**
@@ -645,10 +646,10 @@ public class PNGReader
 		{
 			// Read in all values, the mask is used to keep the sign bit in
 			// place but also cap the value to 255!
-			int r = __dis.read() & 0x800000FF;
-			int g = __dis.read() & 0x800000FF;
-			int b = __dis.read() & 0x800000FF;
-			int a = (__alpha ? (__dis.read() & 0x800000FF) : 0xFF);
+			int r = __dis.read() & __PNGConst__.SIGN_MASK;
+			int g = __dis.read() & __PNGConst__.SIGN_MASK;
+			int b = __dis.read() & __PNGConst__.SIGN_MASK;
+			int a = (__alpha ? (__dis.read() & __PNGConst__.SIGN_MASK) : 0xFF);
 			
 			// Have any hit EOF? Just need to OR all the bits
 			if ((r | g | b | a) < 0)
@@ -684,8 +685,8 @@ public class PNGReader
 		{
 			// Read in all values, the mask is used to keep the sign bit in
 			// place but also cap the value to 255!
-			int a = __dis.read() & 0x800000FF;
-			int y = __dis.read() & 0x800000FF;
+			int a = __dis.read() & __PNGConst__.SIGN_MASK;
+			int y = __dis.read() & __PNGConst__.SIGN_MASK;
 			
 			// Have any hit EOF? Just need to OR all the bits
 			if ((a | y) < 0)
@@ -820,56 +821,6 @@ public class PNGReader
 		}
 		
 		return rv;
-	}
-	
-	/**
-	 * Reads all the input data and returns a byte array for the data, so it
-	 * may be processed later.
-	 *
-	 * @param __in The stream to read from.
-	 * @return The read data.
-	 * @throws IOException On read errors.
-	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/14
-	 */
-	private static byte[] __chunkLater(InputStream __in)
-		throws IOException, NullPointerException
-	{
-		if (__in == null)
-			throw new NullPointerException("NARG");
-		
-		// The final glue point
-		ByteDeque glue = new ByteDeque();
-		
-		// Read in all the various chunks as much as possible
-		byte[] buf = StreamUtils.buffer(__in);
-		for (;;)
-		{
-			// Read in the chunk data
-			int rc = __in.read(buf, 0, buf.length);
-			
-			// EOF?
-			if (rc < 0)
-				break;
-			
-			// Add to the buffer
-			glue.addLast(buf, 0, rc);
-		}
-		
-		return glue.toByteArray();
-	}
-	
-	/**
-	 * Rounds the number of bits to bytes according to the PNG specification.
-	 * 
-	 * @param __numBits The number of bits.
-	 * @return The number of bytes that represent the bits, rounded up.
-	 * @since 2022/06/14
-	 */
-	private static int __roundNumBitsToByte(int __numBits)
-	{
-		// Divide by 8 for bits, flooring... then round up for any other bits
-		return (__numBits >>> 3) + (((__numBits & 0b111) == 0) ? 0 : 1);
 	}
 }
 
