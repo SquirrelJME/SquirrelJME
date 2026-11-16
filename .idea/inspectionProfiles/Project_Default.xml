@@ -906,9 +906,6 @@
     <inspection_tool class="IncorrectMessageFormat" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="IncrementDecrementUsedAsExpression" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
     <inspection_tool class="InfiniteRecursion" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
@@ -934,12 +931,6 @@
     </inspection_tool>
     <inspection_tool class="InstanceGuardedByStatic" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
-    </inspection_tool>
-    <inspection_tool class="InstanceVariableInitialization" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true">
-        <option name="m_ignorePrimitives" value="false" />
-      </scope>
-      <option name="m_ignorePrimitives" value="false" />
     </inspection_tool>
     <inspection_tool class="InstanceVariableUninitializedUse" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true">
@@ -1238,8 +1229,10 @@
     <inspection_tool class="MagicConstant" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="MagicNumber" enabled="true" level="WARNING" enabled_by_default="false">
-      <scope name="SquirrelJME" level="WARNING" enabled="true" />
+    <inspection_tool class="MagicNumber" enabled="false" level="WARNING" enabled_by_default="false">
+      <scope name="SquirrelJME" level="WARNING" enabled="false">
+        <option name="ignoreInitialCapacity" value="true" />
+      </scope>
     </inspection_tool>
     <inspection_tool class="MainFunctionReturnUnit" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="MalformedDataProvider" enabled="false" level="WARNING" enabled_by_default="false" />

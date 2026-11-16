@@ -52,7 +52,7 @@ public class PNGReader
 	private int _width;
 	
 	/** Scanline length. */
-	private int _scanlen;
+	private int _scanLen;
 	
 	/** Image height. */
 	private int _height;
@@ -73,13 +73,13 @@ public class PNGReader
 	private int[] _palette;
 	
 	/** Was an alpha channel used? */
-	private boolean _hasalpha;
+	private boolean _hasAlpha;
 	
 	/** Initial value for read Y position, for multiple IDAT chunks. */
-	private int _initvy;
+	private int _initVy;
 	
 	/** Initial value for read X position, for multiple IDAT chunks. */
-	private int _initvx;
+	private int _initVx;
 	
 	/** The number of colors used. */
 	private int _numColors;
@@ -253,7 +253,7 @@ public class PNGReader
 			throw new IOException("EB0v");
 		
 		// Is an alpha channel being used?
-		if (!this._hasalpha)
+		if (!this._hasAlpha)
 		{
 			// Force all pixels to opaque
 			Arrays.fill(argb, 0xFF_000000);
@@ -302,7 +302,7 @@ public class PNGReader
 		loader.initialize(this._width, this._height,
 			false, false);
 		loader.addImage(argb, 0, argb.length,
-			0, this._hasalpha);
+			0, this._hasAlpha);
 	}
 	
 	/**
@@ -359,12 +359,12 @@ public class PNGReader
 			throw new NullPointerException("NARG");
 		
 		int[] palette = this._palette;
-		int colortype = this._colorType,
-			numpals = (palette != null ? palette.length : 0),
-			numcolors = this._numColors;
+		int colortype = this._colorType;
+		int numPals = (palette != null ? palette.length : 0);
+		int numColors = this._numColors;
 		
 		// Force alpha channel to be set
-		this._hasalpha = true;
+		this._hasAlpha = true;
 		
 		// Alpha values for grayscale or true-color
 		if (colortype == 0)
@@ -373,15 +373,15 @@ public class PNGReader
 			for (int at = 0;;)
 			{
 				// Read in color
-				int col = __in.read(),
-					ign = __in.read();
+				int col = __in.read();
+				int ign = __in.read();
 				
 				// EOF?
 				if ((col | ign) < 0)
 					break;
 				
 				// Find color to remove the alpha channel from the palette
-				for (int p = 0; p < numpals; p++)
+				for (int p = 0; p < numPals; p++)
 					if (palette[p] == col)
 						palette[p] &= 0xFFFFFF;
 			}
@@ -392,7 +392,7 @@ public class PNGReader
 		{
 			// Read as many entries as possible
 			int i = 0;
-			for (; i < numcolors; i++)
+			for (; i < numColors; i++)
 			{
 				int val = __in.read();
 				
@@ -406,7 +406,7 @@ public class PNGReader
 			
 			// The alpha data can be short, which means that all of
 			// the following colors are fully opaque
-			for (; i < numcolors; i++)
+			for (; i < numColors; i++)
 				palette[i] |= 0xFF_000000;
 		}
 	}
@@ -444,39 +444,39 @@ public class PNGReader
 		Debugging.debugNote("Size: %dx%d%n", width, height);
 		
 		// Read the bit depth and the color type
-		int bitdepth = __in.readUnsignedByte();
-		int colortype = __in.readUnsignedByte();
+		int bitDepth = __in.readUnsignedByte();
+		int colorType = __in.readUnsignedByte();
 		
 		/* {@squirreljme.error EB11 Invalid PNG bit depth.
 		(The bit depth)} */
-		if (Integer.bitCount(bitdepth) != 1 || bitdepth < 0 || bitdepth > 16)
-			throw new IOException(String.format("EB11 %d", bitdepth));
+		if (Integer.bitCount(bitDepth) != 1 || bitDepth < 0 || bitDepth > 16)
+			throw new IOException(String.format("EB11 %d", bitDepth));
 		
 		/* {@squirreljme.error EB12 Invalid PNG bit depth and color type
 		combination. (The color type; The bit depth)} */
-		if ((bitdepth < 8 && (colortype != 0 && colortype != 3)) ||
-			(bitdepth > 8 && colortype != 3))
-			throw new IOException(String.format("EB12 %d %d", colortype,
-				bitdepth));
+		if ((bitDepth < 8 && (colorType != 0 && colorType != 3)) ||
+			(bitDepth > 8 && colorType != 3))
+			throw new IOException(String.format("EB12 %d %d", colorType,
+				bitDepth));
 			
 		// Set
-		this._bitDepth = bitdepth;
-		this._colorType = colortype;
+		this._bitDepth = bitDepth;
+		this._colorType = colorType;
 		
 		// These two color types have alpha, this field may be set later on
 		// if a transparency chunk was found
 		boolean hasalpha;
-		this._hasalpha = (hasalpha = (colortype == 4 || colortype == 6));
+		this._hasAlpha = (hasalpha = (colorType == 4 || colorType == 6));
 		
 		// Determine number of channels
-		int channels = (colortype == 0 || colortype == 3 ? 1 :
-			(colortype == 2 ? 3 :
-			(colortype == 4 ? 2 :
-			(colortype == 6 ? 4 : 1))));
+		int channels = (colorType == 0 || colorType == 3 ? 1 :
+			(colorType == 2 ? 3 :
+			(colorType == 4 ? 2 :
+			(colorType == 6 ? 4 : 1))));
 		
 		// Scan length, 7 extra bits are added for any needed padding if there
 		// is any
-		this._scanlen = ((width * channels * bitdepth) + 7) / 8;
+		this._scanLen = ((width * channels * bitDepth) + 7) / 8;
 		
 		/* {@squirreljme.error EB13 Only deflate compressed PNG images are
 		supported. (The compression method)} */
@@ -503,16 +503,16 @@ public class PNGReader
 		// If this is grayscale, then force a palette to be initialized so the
 		// colors are more easily read without needing to process them further
 		// So all values are treated as indexed
-		if (colortype == 0)
+		if (colorType == 0)
 		{
 			// 2^d colors available
-			int numcolors = (1 << bitdepth);
+			int numColors = (1 << bitDepth);
 			
 			// Build palette, force everything to opaque, it will be cleared
 			// later
-			int[] palette = new int[numcolors];
-			for (int i = 0; i < numcolors; i++)
-				palette[i] = ((int)(((double)i / (double)numcolors) * 255.0)) |
+			int[] palette = new int[numColors];
+			for (int i = 0; i < numColors; i++)
+				palette[i] = ((int)(((double)i / (double)numColors) * 255.0)) |
 					0xFF_000000;
 			
 			// Set
@@ -589,11 +589,11 @@ public class PNGReader
 		int width = this._width;
 		int height = this._height;
 		int limit = width * height;
-		int bitdepth = this._bitDepth;
-		int bitmask = (1 << bitdepth) - 1;
-		int numpals = (palette != null ? palette.length : 0);
-		int hishift = (8 - bitdepth);
-		int himask = bitmask << hishift;
+		int bitDepth = this._bitDepth;
+		int bitMask = (1 << bitDepth) - 1;
+		int numPals = (palette != null ? palette.length : 0);
+		int hiShift = (8 - bitDepth);
+		int hiMask = bitMask << hiShift;
 		
 		// Do not translate paletted colors, get their raw index values?
 		boolean wantIndexed = this._wantIndexed;
@@ -607,9 +607,9 @@ public class PNGReader
 				break;
 			
 			// Handle each bit
-			for (int b = 0; b < 8 && o < limit; b += bitdepth, v <<= bitdepth)
+			for (int b = 0; b < 8 && o < limit; b += bitDepth, v <<= bitDepth)
 			{
-				int index = ((v & himask) >>> hishift) % numpals;
+				int index = ((v & hiMask) >>> hiShift) % numPals;
 				
 				if (wantIndexed)
 					argb[o++] = index;
@@ -645,9 +645,9 @@ public class PNGReader
 		{
 			// Read in all values, the mask is used to keep the sign bit in
 			// place but also cap the value to 255!
-			int r = __dis.read() & 0x800000FF,
-				g = __dis.read() & 0x800000FF,
-				b = __dis.read() & 0x800000FF;
+			int r = __dis.read() & 0x800000FF;
+			int g = __dis.read() & 0x800000FF;
+			int b = __dis.read() & 0x800000FF;
 			int a = (__alpha ? (__dis.read() & 0x800000FF) : 0xFF);
 			
 			// Have any hit EOF? Just need to OR all the bits
@@ -675,17 +675,17 @@ public class PNGReader
 		
 		// Get output
 		int[] argb = this._argb;
-		int width = this._width,
-			height = this._height,
-			limit = width * height;
+		int width = this._width;
+		int height = this._height;
+		int limit = width * height;
 		
 		// Keep reading in data
 		for (int o = 0; o < limit;)
 		{
 			// Read in all values, the mask is used to keep the sign bit in
 			// place but also cap the value to 255!
-			int a = __dis.read() & 0x800000FF,
-				y = __dis.read() & 0x800000FF;
+			int a = __dis.read() & 0x800000FF;
+			int y = __dis.read() & 0x800000FF;
 			
 			// Have any hit EOF? Just need to OR all the bits
 			if ((a | y) < 0)
@@ -713,7 +713,7 @@ public class PNGReader
 			throw new NullPointerException("NARG");
 		
 		// Need these
-		int scanLen = this._scanlen;
+		int scanLen = this._scanLen;
 		int height = this._height;
 		
 		// Allocate buffer that will be returned, containing the unfiltered
@@ -724,7 +724,7 @@ public class PNGReader
 		for (int dy = 0; dy < height; dy++)
 		{
 			// Base output for this scanline
-			int ibase = scanLen * dy;
+			int iBase = scanLen * dy;
 			
 			// At the start of every scanline is the filter type, which
 			// describes how the data should be treated
@@ -743,7 +743,7 @@ public class PNGReader
 				int vX = dx / __bpp;
 				
 				// The current position in the buffer
-				int di = ibase + dx;
+				int di = iBase + dx;
 				
 				// The filter algorithm is a bit confusing and it uses the
 				// prior and old pixel information, so according to the PNG
