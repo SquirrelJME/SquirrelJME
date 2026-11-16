@@ -835,7 +835,6 @@
     <inspection_tool class="FunctionalExpressionCanBeFolded" enabled="true" level="WARNING" enabled_by_default="true">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="GrpcSchemes" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="HardcodedFileSeparators" enabled="false" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="false">
         <option name="m_recognizeExampleMediaType" value="false" />
@@ -2823,12 +2822,6 @@
     <inspection_tool class="VolatileArrayField" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />
     </inspection_tool>
-    <inspection_tool class="VueDataFunction" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="VueDeprecatedSymbol" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="VueDuplicateTag" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="VueMissingComponentImportInspection" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="VueUnrecognizedDirective" enabled="false" level="WARNING" enabled_by_default="false" />
-    <inspection_tool class="VueUnrecognizedSlot" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="WadlDomInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="WaitCalledOnCondition" enabled="true" level="WARNING" enabled_by_default="false">
       <scope name="SquirrelJME" level="WARNING" enabled="true" />

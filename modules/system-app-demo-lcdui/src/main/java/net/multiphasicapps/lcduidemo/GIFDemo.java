@@ -25,6 +25,6 @@ public class GIFDemo
 	public GIFDemo()
 		throws NullPointerException
 	{
-		super(GIFDemo.class.getResourceAsStream("image.gif"));
+		super(GIFDemo.class, "gif");
 	}
 }

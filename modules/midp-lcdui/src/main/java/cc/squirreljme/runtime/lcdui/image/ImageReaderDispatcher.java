@@ -183,12 +183,9 @@ public class ImageReaderDispatcher<S>
 			{
 				return this.__native(loadType, __is);
 			}
-			catch (MLECallError __e)
+			catch (MLECallError|IOException|__CancelNativeException__ ignored)
 			{
-				__e.printStackTrace();
-			}
-			catch (__CancelNativeException__ ignored)
-			{
+				// Always fallback to non-native images
 			}
 		
 		// Otherwise load it in software

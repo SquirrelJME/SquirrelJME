@@ -11,9 +11,9 @@ package net.multiphasicapps.lcduidemo;
 
 import java.io.IOException;
 import java.io.InputStream;
-import javax.microedition.lcdui.Canvas;
+import java.util.ArrayList;
+import java.util.List;
 import javax.microedition.lcdui.Display;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.Sprite;
 import javax.microedition.midlet.MIDlet;
@@ -37,30 +37,46 @@ public abstract class AbstractImageDemo
 		new int[]{Sprite.TRANS_MIRROR, Sprite.TRANS_MIRROR_ROT90,
 			Sprite.TRANS_MIRROR_ROT180, Sprite.TRANS_MIRROR_ROT270};
 	
-	/** The image to use. */
-	protected final Image image;
+	/** The images to use. */
+	protected final Image[] images;
 	
 	/**
 	 * Initializes the image demo.
 	 *
-	 * @param __in Input stream.
+	 * @param __pivot The class pivot for resource lookup.
+	 * @param __ext The file extension to use.
 	 * @throws NullPointerException On null arguments.
-	 * @since 2019/04/15
+	 * @since 2026/11/15
 	 */
-	public AbstractImageDemo(InputStream __in)
+	public AbstractImageDemo(Class<?> __pivot, String __ext)
 		throws NullPointerException
 	{
-		// Load image data
-		try
-		{
-			this.image = Image.createImage(__in);
-		}
+		if (__pivot == null || __ext == null)
+			throw new NullPointerException("NARG");
 		
-		// Fail
-		catch (IOException e)
-		{
-			throw new RuntimeException(e);
-		}
+		// There may be multiple images
+		List<Image> images = new ArrayList<>();
+		
+		// Load image data
+		for (int i = 0; i >= 0; i++)
+			try (InputStream in = __pivot.getResourceAsStream(
+				String.format("image%s.%s", (i == 0 ? "" : i), __ext)))
+			{
+				// No more resources?
+				if (in == null)
+					break;
+				
+				images.add(Image.createImage(in));
+			}
+			
+			// Failed to load, ignore
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		
+		// Set all used images
+		this.images = images.toArray(new Image[images.size()]);
 	}
 	
 	/**
@@ -82,7 +98,7 @@ public abstract class AbstractImageDemo
 		throws MIDletStateChangeException
 	{
 		// Setup canvas
-		DemoCanvas cv = new DemoCanvas(this.image);
+		ImageDemoCanvas cv = new ImageDemoCanvas(this.images);
 		cv.setTitle("Image Demo");
 		
 		// Exit command
@@ -91,115 +107,6 @@ public abstract class AbstractImageDemo
 		
 		// Set display to the canvas
 		Display.getDisplay(this).setCurrent(cv);
-	}
-	
-	/**
-	 * The demo canvas which does the drawing.
-	 *
-	 * @since 2019/04/15
-	 */
-	public static final class DemoCanvas
-		extends Canvas
-	{
-		/** The image to draw. */
-		protected final Image image;
-		
-		/**
-		 * Initializes the demo canvas.
-		 *
-		 * @param __i The image to use.
-		 * @throws NullPointerException On null arguments.
-		 * @since 2019/04/15
-		 */
-		public DemoCanvas(Image __i)
-			throws NullPointerException
-		{
-			if (__i == null)
-				throw new NullPointerException("NARG");
-			
-			this.image = __i;
-		}
-		
-		/**
-		 * {@inheritDoc}
-		 * @since 2018/11/22
-		 */
-		@Override
-		public void paint(Graphics __g)
-		{
-			// Get image
-			Image image = this.image;
-			int w = image.getWidth(),
-				h = image.getHeight();
-			
-			// Base Y position
-			int basey = 0;
-			
-			// Draw portions of the image
-			for (int i = 0; i < 4; i++)
-			{
-				// Determine x and y offset
-				int xoff = (((i & 0b01) == 0) ? 0 : w >>> 1),
-					yoff = (((i & 0b10) == 0) ? 0 : h >>> 1);
-				
-				// Source X and Y dimensions
-				int sx = xoff,
-					sy = yoff,
-					sw = w - xoff,
-					sh = h - yoff;
-				
-				// Non-mirrored rotations
-				for (int j = 0; j < AbstractImageDemo._NO_MIRROR.length; j++)
-					__g.drawRegion(image, sx, sy, sw, sh,
-						AbstractImageDemo._NO_MIRROR[j],
-						(w * j), basey, 0);
-				basey += h;
-					
-				// Mirrored rotations
-				for (int j = 0; j < AbstractImageDemo._MIRROR.length; j++)
-					__g.drawRegion(image, sx, sy, sw, sh,
-						AbstractImageDemo._MIRROR[j],
-						(w * j), basey, 0);
-				basey += h;
-			}
-			
-			// Plain image drawing
-			__g.drawImage(image, 0, basey,
-				Graphics.TOP | Graphics.LEFT);
-			basey += h;
-			
-			// Big Lex
-			__g.drawRegion(image, 0, 0, w, h,
-				0, 0, basey, 0,
-				w * 2, h * 2);
-			basey += (h * 2);
-			
-			// Little Lex
-			__g.drawRegion(image, 0, 0, w, h,
-				0, 0, basey, 0,
-				w / 2, h / 2);
-			basey += h / 2;
-			
-			// Thicc Lex
-			__g.drawRegion(image, 0, 0, w, h,
-				0, 0, basey, 0,
-				w * 4, h / 2);
-			basey += h / 2;
-			
-			// Back to top
-			int basex = (w * 4) + (w / 2);
-			basey = 0;
-			
-			// Half of a lex, width
-			__g.drawRegion(image, w / 2, 0, w / 2, h,
-				0, basex, basey, 0);
-			basey += h;
-			
-			// Half of a lex, Height
-			__g.drawRegion(image, 0, h / 2, w, h / 2,
-				0, basex, basey, 0);
-			basey += h;
-		}
 	}
 }
 

@@ -25,6 +25,6 @@ public final class JPEGDemo
 	 */
 	public JPEGDemo()
 	{
-		super(JPEGDemo.class.getResourceAsStream("image.jpg"));
+		super(JPEGDemo.class, "jpg");
 	}
 }

@@ -64,7 +64,7 @@ public class PNGReader
 	private int _colorType;
 	
 	/** Is adam7 interlacing being used? */
-	private boolean _adamseven;
+	private boolean _adamSeven;
 	
 	/** RGB image data. */
 	private int[] _argb;
@@ -82,10 +82,10 @@ public class PNGReader
 	private int _initvx;
 	
 	/** The number of colors used. */
-	private int _numcolors;
+	private int _numColors;
 	
 	/** The maximum number of permitted colors. */
-	private int _maxcolors;
+	private int _maxColors;
 	
 	/**
 	 * Initializes the PNG parser.
@@ -266,12 +266,12 @@ public class PNGReader
 		}
 		
 		/* {@squirreljme.error EB0w Unsupported bit-depth. (The bitdepth)} */
-		int bitdepth = this._bitDepth;
-		if (Integer.bitCount(bitdepth) != 1 || bitdepth > 8)
-			throw new IOException("EB0w " + bitdepth);
+		int bitDepth = this._bitDepth;
+		if (Integer.bitCount(bitDepth) != 1 || bitDepth > 8)
+			throw new IOException("EB0w " + bitDepth);
 		
 		/* {@squirreljme.error EB0x Adam7 interlacing not supported.} */
-		if (this._adamseven)
+		if (this._adamSeven)
 			throw new IOException("EB0x");
 		
 		/* {@squirreljme.error EB0y Paletted PNG image has no palette.} */
@@ -361,7 +361,7 @@ public class PNGReader
 		int[] palette = this._palette;
 		int colortype = this._colorType,
 			numpals = (palette != null ? palette.length : 0),
-			numcolors = this._numcolors;
+			numcolors = this._numColors;
 		
 		// Force alpha channel to be set
 		this._hasalpha = true;
@@ -444,8 +444,8 @@ public class PNGReader
 		Debugging.debugNote("Size: %dx%d%n", width, height);
 		
 		// Read the bit depth and the color type
-		int bitdepth = __in.readUnsignedByte(),
-			colortype = __in.readUnsignedByte();
+		int bitdepth = __in.readUnsignedByte();
+		int colortype = __in.readUnsignedByte();
 		
 		/* {@squirreljme.error EB11 Invalid PNG bit depth.
 		(The bit depth)} */
@@ -495,7 +495,7 @@ public class PNGReader
 		int interlace = __in.readUnsignedByte();
 		if (interlace != 0 && interlace != 1)
 			throw new IOException(String.format("EB15 %d", interlace));
-		this._adamseven = (interlace == 1);
+		this._adamSeven = (interlace == 1);
 		
 		// Allocate image buffer
 		this._argb = new int[width * height];
@@ -547,8 +547,8 @@ public class PNGReader
 			numColors = maxColors;
 		
 		// Set
-		this._numcolors = numColors;
-		this._maxcolors = maxColors;
+		this._numColors = numColors;
+		this._maxColors = maxColors;
 		
 		// Load palette data, any remaining colors are left uninitialized and
 		// are fully transparent or just black
@@ -556,9 +556,9 @@ public class PNGReader
 		this._palette = palette;
 		for (int i = 0; i < numColors; i++)
 		{
-			int r = __in.readUnsignedByte(),
-				g = __in.readUnsignedByte(),
-				b = __in.readUnsignedByte();
+			int r = __in.readUnsignedByte();
+			int g = __in.readUnsignedByte();
+			int b = __in.readUnsignedByte();
 			
 			// Fill in color
 			palette[i] = (r << 16) | (g << 8) | b;

@@ -24,7 +24,7 @@ public final class XPMDemo
 	 */
 	public XPMDemo()
 	{
-		super(XPMDemo.class.getResourceAsStream("image.xpm"));
+		super(XPMDemo.class, "xpm");
 	}
 }
 
