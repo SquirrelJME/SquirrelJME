@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="12.0.1" transformSequenceNumber="12">
   <directoryPresets config="." />
-  <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build/install4j/out" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.0_0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
+  <application name="SquirrelJME" applicationId="5232-9992-4953-4137" mediaDir="./build/install4j/out" compression="9" lzmaCompression="true" pack200Compression="true" shortName="squirreljme" publisher="Stephanie Gawroriski" publisherWeb="https://squirreljme.cc/" version="0.3.1_0" allPathsRelative="true" backupOnSave="true" autoSave="true" macVolumeId="b44c0629f58949ee" javaMinVersion="1.8.0_452" javaMaxVersion="11">
     <variables>
       <variable name="squirreljme.installer_version" value="0_3_0" description="Installer version string." />
       <variable name="squirreljme.standalone.path" value="./build/install4j/in/squirreljme-standalone.jar" description="Input path for the build (default)." />
@@ -32,7 +32,7 @@
   <launchers>
     <launcher name="squirreljme" id="24" menuName="SquirrelJME" customMacBundleIdentifier="true" macBundleIdentifier="cc.squirreljme" swtApp="true" addMacApplicationCategory="true" macApplicationCategory="public.app-category.utilities" checkUpdater="true" updateExecutionMode="unattended">
       <executable name="squirreljme" iconSet="true" redirectStderr="false" executableMode="console" changeWorkingDirectory="false" checkConsoleParameter="true" dpiAware="true">
-        <versionInfo include="true" fileVersion="0.3.0.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
+        <versionInfo include="true" fileVersion="0.3.1.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
       </executable>
       <java mainClass="cc.squirreljme.vm.standalone.main.Main" allowVMPassthroughParameters="false" preferredVM="client">
         <classPath>
@@ -58,7 +58,7 @@
     </launcher>
     <launcher name="squirreljme-debugger" id="124" menuName="SquirrelJME Debugger" customMacBundleIdentifier="true" macBundleIdentifier="cc.squirreljme" swtApp="true" addMacApplicationCategory="true" macApplicationCategory="public.app-category.utilities" checkUpdater="true">
       <executable name="squirreljme-debugger" iconSet="true" redirectStderr="false" executableMode="gui" changeWorkingDirectory="false" checkConsoleParameter="true" dpiAware="true">
-        <versionInfo include="true" fileVersion="0.3.0.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
+        <versionInfo include="true" fileVersion="0.3.1.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
       </executable>
       <java mainClass="cc.squirreljme.vm.standalone.main.Main" arguments="-XdebuggerOnly" allowVMPassthroughParameters="false" preferredVM="client">
         <classPath>
@@ -84,7 +84,7 @@
     </launcher>
     <launcher name="squirreljme-hosted" id="127" menuName="SquirrelJME (Hosted)" customMacBundleIdentifier="true" macBundleIdentifier="cc.squirreljme" swtApp="true" addMacApplicationCategory="true" macApplicationCategory="public.app-category.utilities" checkUpdater="true" updateExecutionMode="unattended">
       <executable name="squirreljme-hosted" iconSet="true" redirectStderr="false" executableMode="console" changeWorkingDirectory="false" checkConsoleParameter="true" dpiAware="true">
-        <versionInfo include="true" fileVersion="0.3.0.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
+        <versionInfo include="true" fileVersion="0.3.1.0" fileDescription="SquirrelJME" legalCopyright="Copyright (C) 2016-2025 Stephanie Gawroriski" internalName="SquirrelJME" productName="SquirrelJME" />
       </executable>
       <java mainClass="cc.squirreljme.vm.standalone.main.Main" arguments="-Xemulator:hosted" allowVMPassthroughParameters="false" preferredVM="client">
         <classPath>
@@ -109,9 +109,9 @@
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="https://squirreljme.cc/uv/unstable/0.3.0/updates.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://squirreljme.cc/uv/unstable/0.3.0/">
+  <installerGui autoUpdateDescriptorUrl="https://squirreljme.cc/uv/unstable/0.3.1/updates.xml" useAutoUpdateBaseUrl="true" autoUpdateBaseUrl="https://squirreljme.cc/uv/unstable/0.3.1/">
     <laf type="native" />
-    <autoUpdate minUpdatableVersion="0.3.0" maxUpdatableVersion="0.3.0" />
+    <autoUpdate minUpdatableVersion="0.3.1" maxUpdatableVersion="0.3.0" />
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication">
         <startup>

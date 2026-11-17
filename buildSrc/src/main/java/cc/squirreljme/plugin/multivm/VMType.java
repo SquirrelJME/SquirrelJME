@@ -228,9 +228,9 @@ public enum VMType
 				"en-US");
 			
 			// Define Java ME Platform
-			sysProps.put("microedition.platform", "SquirrelJME/0.3.0");
+			sysProps.put("microedition.platform", "SquirrelJME/0.3.1");
 			sysProps.put("squirreljme.orig.microedition.platform",
-				"SquirrelJME/0.3.0");
+				"SquirrelJME/0.3.1");
 			
 			// VM Tracing?
 			String tracing = System.getProperty("cc.squirreljme.vm.trace");
