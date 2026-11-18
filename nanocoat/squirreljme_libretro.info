@@ -34,7 +34,7 @@ license = "MPL-2.0"
 permissions = ""
 
 # Version of the core:
-display_version = "0.3.0"
+display_version = "0.3.1"
 
 # Whether or not the core requires an external file to work:
 supports_no_game = "true"
@@ -44,20 +44,20 @@ firmware_count = 10
 
 # Versioned Class Libraries, SquirrelJME prefers a class library with a
 # version number which matches the core version first.
-firmware0_desc = "squirreljme-0.3.0-fast.jar (SquirrelJME Class Library, Versioned, Optimized and stripped)"
-firmware0_path = "squirreljme-0.3.0-fast.jar"
+firmware0_desc = "squirreljme-0.3.1-fast.jar (SquirrelJME Class Library, Versioned, Optimized and stripped)"
+firmware0_path = "squirreljme-0.3.1-fast.jar"
 firmware0_opt = "true"
-firmware1_desc = "squirreljme-0.3.0.jar (SquirrelJME Class Library, Versioned)"
-firmware1_path = "squirreljme-0.3.0.jar"
+firmware1_desc = "squirreljme-0.3.1.jar (SquirrelJME Class Library, Versioned)"
+firmware1_path = "squirreljme-0.3.1.jar"
 firmware1_opt = "true"
-firmware2_desc = "squirreljme-0.3.0-test.jar (SquirrelJME Class Library, Versioned, Optimized and stripped with Tests)"
-firmware2_path = "squirreljme-0.3.0-test.jar"
+firmware2_desc = "squirreljme-0.3.1-test.jar (SquirrelJME Class Library, Versioned, Optimized and stripped with Tests)"
+firmware2_path = "squirreljme-0.3.1-test.jar"
 firmware2_opt = "true"
-firmware3_desc = "squirreljme-0.3.0-slow.jar (SquirrelJME Class Library, Versioned, Unoptimized with full debugging)"
-firmware3_path = "squirreljme-0.3.0-slow.jar"
+firmware3_desc = "squirreljme-0.3.1-slow.jar (SquirrelJME Class Library, Versioned, Unoptimized with full debugging)"
+firmware3_path = "squirreljme-0.3.1-slow.jar"
 firmware3_opt = "true"
-firmware4_desc = "squirreljme-0.3.0-slow-test.jar (SquirrelJME Class Library, Versioned, Unoptimized with full debugging with tests)"
-firmware4_path = "squirreljme-0.3.0-slow-test.jar"
+firmware4_desc = "squirreljme-0.3.1-slow-test.jar (SquirrelJME Class Library, Versioned, Unoptimized with full debugging with tests)"
+firmware4_path = "squirreljme-0.3.1-slow-test.jar"
 firmware4_opt = "true"
 
 # Non-versioned Class Libraries, these have no version specified and may or

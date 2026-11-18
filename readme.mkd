@@ -20,8 +20,8 @@ standard Java Virtual Machine that you would find on any desktop system. This
 also includes a _libretro_ front-end which allows SquirrelJME to be used with a
 wide variety of emulation systems such as RetroArch.
 
- * Copyright (C) 2013-2026 Stephanie Gawroriski <xer@multiphasicapps.net>
- * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2026
+ * Copyright (C) 2013-2027 Stephanie Gawroriski <xer@multiphasicapps.net>
+ * "SquirrelJME" and "Lex" are trademarked by Stephanie Gawroriski 2016-2027
  * _Lex_ and The _SquirrelJME_ Logo were illustrated by...
    * Kat Adam-MacEwen
    * Kat@CMYKat Designs & Illustrations <https://www.cmykatgraphics.ca/>
