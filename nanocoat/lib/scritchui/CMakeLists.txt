@@ -73,6 +73,13 @@ if(SQUIRRELJME_ENABLE_GUI_WIN32)
 	squirreljme_scritchui_build(win32 Win32)
 endif()
 
+# Mac OS Cocoa
+option(SQUIRRELJME_ENABLE_GUI_COCOA "Enable Cocoa GUI"
+	${SQUIRRELJME_ON_IF_APPLE_OR_GNUSTEP_DESKTOP})
+if (SQUIRRELJME_ENABLE_GUI_COCOA)
+	squirreljme_scritchui_build(cocoa Cocoa)
+endif()
+
 # Motif?
 if(SQUIRRELJME_ENABLE_GUI_DEVELOPER)
 	squirreljme_include("find-motif.cmake")

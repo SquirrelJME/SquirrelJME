@@ -525,6 +525,11 @@ sjme_errorCode sjme_scritchui_core_intern_loopQueuePush(
 	sjme_attrInNotNull sjme_thread_mainFunc callback,
 	sjme_attrInNullable sjme_thread_parameter anything);
 
+sjme_errorCode sjme_scritchui_core_intern_locateInWindow(
+	sjme_attrInNotNull sjme_scritchui inState,
+	sjme_attrInNotNull sjme_scritchui_uiComponent inComponent,
+	sjme_attrOutNotNull sjme_scritchui_uiWindow* outWindow);
+	
 sjme_errorCode sjme_scritchui_core_intern_mapScreen(
 	sjme_attrInNotNull sjme_scritchui inState,
 	sjme_attrInValue sjme_jint screenId,
